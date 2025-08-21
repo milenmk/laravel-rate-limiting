@@ -1,0 +1,15 @@
+node_modules
+dist
+.env*
+vendor/
+/vendor
+public/
+.git
+/.git
+**/.git
+package-lock.json
+composer.lock
+.idea
+/.idea
+.husky
+/.husky

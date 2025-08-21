@@ -1,0 +1,4 @@
+{
+    "include": ["src", "config", "resources"],
+    "exclude": ["vendor", "node_modules", "tests"]
+}

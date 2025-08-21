@@ -1,0 +1,17 @@
+{
+    "printWidth": 120,
+    "trailingComma": "all",
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": true,
+    "phpVersion": "8.2",
+    "plugins": ["@prettier/plugin-php", "prettier-plugin-blade", "prettier-plugin-tailwindcss"],
+    "overrides": [
+        {
+            "files": ["*.blade.php", "*.php"],
+            "options": {
+                "parser": "blade"
+            }
+        }
+    ]
+}

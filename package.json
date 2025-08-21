@@ -1,0 +1,26 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "format-src": "npx prettier --write src/",
+        "format-resources": "npx prettier --write resources/"
+    },
+    "dependencies": {
+        "autoprefixer": "^10.4.21"
+    },
+    "devDependencies": {
+        "@prettier/plugin-php": "^0.22.4",
+        "husky": "^8.0.0",
+        "lint-staged": "^15.4.3",
+        "prettier": "^3.5.3",
+        "prettier-plugin-blade": "^2.1.21",
+        "prettier-plugin-tailwindcss": "^0.6.11"
+    },
+    "lint-staged": {
+        "**/*.php*": [
+            "vendor/bin/duster fix",
+            "npm run format-src",
+            "npm run format-resources"
+        ]
+    }
+}

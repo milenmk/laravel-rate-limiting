@@ -1,0 +1,36 @@
+# Changelog
+
+All notable changes to `milenmk/laravel-rate-limiting` will be documented in this file.
+
+## [1.0.0] - 2025-01-21
+
+### Added
+- Initial release of Laravel Advanced Rate Limiting package
+- Multi-layered protection for authentication endpoints (registration, login, forgot password, two-factor)
+- Three growth strategies: linear, Fibonacci, and exponential backoff
+- Granular limit types: global, per-email, per-IP, per-session, per-username+IP
+- Built-in Blade components for error and warning messages
+- Progressive user feedback with proactive warnings before lockouts
+- Context-aware messaging with intelligent suggestions
+- Comprehensive logging and monitoring capabilities
+- Flexible configuration with environment variable support
+- Support for Laravel 10.x, 11.x, and 12.x
+- Complete documentation and examples
+- Environment variables template (.env.rate-limiting.example)
+
+### Features
+- **RateLimitingServiceProvider**: Core service provider with automatic Laravel integration
+- **Error Message Component**: `<x-error-message>` for displaying rate limit violations
+- **Warning Message Component**: `<x-warning-message>` for proactive user warnings
+- **Configurable Growth Strategies**: Choose between linear, Fibonacci, or exponential backoff
+- **Intelligent Key Generation**: Optimized cache key generation for different limit types
+- **Automatic Integration**: Works seamlessly with Laravel Fortify authentication
+- **Customizable Messages**: Full control over error messages and suggestions
+- **Performance Optimized**: Efficient cache usage with minimal overhead
+
+### Configuration
+- Complete configuration file with sensible defaults
+- Environment variable support for all settings
+- Per-endpoint enable/disable controls
+- Customizable maximum suspension times
+- Flexible message templates with localization support
