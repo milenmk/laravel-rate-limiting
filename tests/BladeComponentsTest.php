@@ -7,14 +7,13 @@ namespace Milenmk\LaravelRateLimiting\Tests;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
+use PHPUnit\Framework\Attributes\Test;
 use Throwable;
 
 class BladeComponentsTest extends TestCase
 {
     /**
      * @throws Throwable
-     *
-     * @test
      */
     public function error_message_component_renders_with_errors(): void
     {
@@ -39,8 +38,6 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
     public function error_message_component_does_not_render_without_errors(): void
     {
@@ -63,9 +60,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function error_message_component_with_custom_class(): void
     {
         $messages = new MessageBag(['rate_limit' => 'Too many attempts']);
@@ -87,9 +83,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function error_message_component_without_title(): void
     {
         $messages = new MessageBag(['rate_limit' => 'Too many attempts']);
@@ -109,9 +104,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function warning_message_component_renders_with_message_prop(): void
     {
         $view = View::make('rate-limiting::components.warning-message', [
@@ -129,9 +123,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function warning_message_component_renders_with_session_data(): void
     {
         // Set session data
@@ -150,9 +143,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function warning_message_component_prioritizes_prop_over_session(): void
     {
         // Set session data
@@ -171,9 +163,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function warning_message_component_does_not_render_without_message(): void
     {
         $view = View::make('rate-limiting::components.warning-message', [
@@ -189,9 +180,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function warning_message_component_with_custom_class(): void
     {
         $view = View::make('rate-limiting::components.warning-message', [
@@ -209,9 +199,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function warning_message_component_without_title(): void
     {
         $view = View::make('rate-limiting::components.warning-message', [
@@ -227,9 +216,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function components_have_proper_accessibility_attributes(): void
     {
         $messages = new MessageBag(['rate_limit' => 'Error message']);
@@ -257,9 +245,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function components_use_proper_css_classes(): void
     {
         // Test error component styling
@@ -292,9 +279,8 @@ class BladeComponentsTest extends TestCase
 
     /**
      * @throws Throwable
-     *
-     * @test
      */
+    #[Test]
     public function components_handle_empty_strings(): void
     {
         // Test error component with empty field

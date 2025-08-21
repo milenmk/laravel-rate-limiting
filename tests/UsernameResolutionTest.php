@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\RateLimiter;
 use Milenmk\LaravelRateLimiting\Providers\RateLimitingServiceProvider;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Request as RequestAlias;
@@ -16,9 +17,8 @@ class UsernameResolutionTest extends TestCase
 {
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function custom_resolver_takes_priority(): void
     {
         Config::set('rate-limiting.username_resolver', function (Request $request) {
@@ -34,9 +34,8 @@ class UsernameResolutionTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function custom_resolver_fallback_when_returns_null(): void
     {
         Config::set('rate-limiting.username_resolver', function () {
@@ -51,9 +50,7 @@ class UsernameResolutionTest extends TestCase
         $this->assertEquals('test@example.com', $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fortify_username_field_when_available(): void
     {
         // Mock Fortify class existence and username method
@@ -68,9 +65,8 @@ class UsernameResolutionTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function configurable_username_field(): void
     {
         Config::set('rate-limiting.username_field', 'username');
@@ -84,9 +80,8 @@ class UsernameResolutionTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function fallback_to_common_fields(): void
     {
         Config::set('rate-limiting.username_field', 'nonexistent');
@@ -119,9 +114,8 @@ class UsernameResolutionTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function returns_unknown_when_no_field_found(): void
     {
         Config::set('rate-limiting.username_field', 'nonexistent');
@@ -135,9 +129,8 @@ class UsernameResolutionTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function handles_non_string_values(): void
     {
         Config::set('rate-limiting.username_field', 'email');
@@ -160,9 +153,8 @@ class UsernameResolutionTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function custom_resolver_with_non_callable(): void
     {
         Config::set('rate-limiting.username_resolver', 'not-callable');
@@ -176,9 +168,7 @@ class UsernameResolutionTest extends TestCase
         $this->assertEquals('test@example.com', $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function username_resolution_in_login_rate_limiter(): void
     {
         Config::set('rate-limiting.username_field', 'email');
