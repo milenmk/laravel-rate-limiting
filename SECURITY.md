@@ -2,9 +2,10 @@
 
 ## Supported Versions
 
-| Version | Stage | Environment | Supported Until |
-| ------- | ----- | ----------- | --------------- |
-| 0.x.x   | Alpha | Development | not supported   |
+| Version | Stage  | Environment | Supported Until |
+| ------- | ------ | ----------- | --------------- |
+| 0.x.x   | Alpha  | Development | not supported   |
+| 1.x.x   | Stable | Production  | TBD             |
 
 #### Stage (maturity of the release)
 
