@@ -78,18 +78,21 @@ class RateLimitingServiceProvider extends ServiceProvider
         );
 
         // Load views
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'rate-limiting');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'laravel-rate-limiting');
 
         // Publish views (optional)
         $this->publishes(
             [
                 __DIR__ . '/../../resources/views' => resource_path('views/vendor/milenmk/laravel-rate-limiting'),
             ],
-            'rate-limiting-views',
+            'laravel-rate-limiting-views',
         );
 
         // Register Blade components
-        Blade::anonymousComponentNamespace('rate-limiting::components', '');
+        Blade::anonymousComponentPath(
+            resource_path('views/vendor/milenmk/laravel-rate-limiting/components'),
+            'laravel-rate-limiting',
+        );
 
         if (! Config::get('rate-limiting.enabled', true)) {
             // Clear any existing limiters when disabled

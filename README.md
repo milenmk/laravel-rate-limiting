@@ -619,6 +619,16 @@ php artisan vendor:publish --tag=rate-limiting-views
 
 Then edit the files in `resources/views/vendor/rate-limiting/components/`.
 
+You can include them in your blade files as follows:
+
+```blade
+{{-- Rate Limit Error Display --}}
+<x-laravel-rate-limiting::error-message field="rate_limit" :title="__('Login Temporarily Blocked')" class="my-4 p-4" />
+
+{{-- Rate Limit Warning Display --}}
+<x-laravel-rate-limiting::warning-message :title="__('Login Attempt Warning')" class="my-4 p-4" />
+```
+
 ### Adding New Limiters
 
 The system is designed for easy extension. To add a new limiter:

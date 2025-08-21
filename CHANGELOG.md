@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.1
+
+#### Published at: 2025-08-22
+
+- Refactors RateLimitingServiceProvider view loading, and Blade component handling.
+
 ## v1.0.0
 
 #### Published at: 2025-08-21
