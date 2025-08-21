@@ -232,8 +232,14 @@ class RateLimitingServiceProvider extends ServiceProvider
             }
 
             // Get custom message with enhanced information
+            session()->forget('rate_limit_error');
             $message = $this->getRateLimitMessage($limiterType, $limitType, $wait, $currentAttempts);
             session()->flash('rate_limit_error', $message);
+
+            return Limit::none()->response(function () use ($request) {
+                return back()
+                    ->withInput($request->except(['password', 'password_confirmation', 'code']));
+            });
         }
 
         // Calculate decay time based on growth strategy
