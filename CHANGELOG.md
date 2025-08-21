@@ -1,8 +1,15 @@
 # Changelog
 
+## v1.0.2
+
+#### Published at: 2025-08-21
+
+- [FIX] Wrong path to copy the blade components
+- [FIX] Error message not shown when limit is hit
+
 ## v1.0.1
 
-#### Published at: 2025-08-22
+#### Published at: 2025-08-21
 
 - Refactors RateLimitingServiceProvider view loading, and Blade component handling.
 

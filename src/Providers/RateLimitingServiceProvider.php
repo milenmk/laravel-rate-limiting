@@ -233,14 +233,7 @@ class RateLimitingServiceProvider extends ServiceProvider
 
             // Get custom message with enhanced information
             $message = $this->getRateLimitMessage($limiterType, $limitType, $wait, $currentAttempts);
-
-            // Return a custom Limit that will trigger the response
-            return Limit::none()->response(function () use ($message, $request) {
-                return redirect()
-                    ->back()
-                    ->withInput($request->except(['password', 'password_confirmation', 'code']))
-                    ->withErrors(['rate_limit' => $message]);
-            });
+            session()->flash('rate_limit_error', $message);
         }
 
         // Calculate decay time based on growth strategy
@@ -272,50 +265,19 @@ class RateLimitingServiceProvider extends ServiceProvider
     ): string {
         $waitMinutes = ceil($waitSeconds / 60);
 
-        // Get base message from config
         $message = Config::get("rate-limiting.messages.{$limiterType}.{$limitType}");
 
+        // Get base message from config
         if (! $message) {
-            $message = Config::get(
+            $baseMessage = Config::get(
                 'rate-limiting.messages.default',
                 'Too many attempts. Please wait :minutes minutes before trying again.',
             );
+
+            $baseMessage = __($baseMessage, ['minutes' => $waitMinutes]);
         }
 
-        // Enhance message with suggestions based on limiter type
-        $enhancedMessage = __($message, ['minutes' => $waitMinutes]);
-        $suggestions = $this->getSuggestions($limiterType, $attempts);
-
-        if ($suggestions) {
-            $enhancedMessage .= ' ' . $suggestions;
-        }
-
-        return $enhancedMessage;
-    }
-
-    /**
-     * Get helpful suggestions based on the limiter type and attempt count
-     */
-    private function getSuggestions(string $limiterType, int $attempts): string
-    {
-        // Check if limiter type has high/low attempt suggestions
-        if (in_array($limiterType, ['login', 'two-factor'])) {
-            $suggestionKey = $attempts >= 3 ? 'high_attempts' : 'low_attempts';
-            $suggestion = Config::get("rate-limiting.suggestions.{$limiterType}.{$suggestionKey}");
-
-            if ($suggestion) {
-                return __($suggestion);
-            }
-        }
-
-        // Get simple suggestion for other limiter types
-        $suggestion = Config::get("rate-limiting.suggestions.{$limiterType}");
-        if ($suggestion) {
-            return __($suggestion);
-        }
-
-        // Fallback to default
-        return __(Config::get('rate-limiting.suggestions.default', 'Please wait before trying again.'));
+        return $message ? __($message, ['minutes' => $waitMinutes]) : $baseMessage;
     }
 
     /**
