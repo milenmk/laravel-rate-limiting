@@ -14,15 +14,13 @@ class TestCase extends Orchestra
         parent::setUp();
     }
 
-    protected function getPackageProviders($app): array
-    {
-        return [
-            RateLimitingServiceProvider::class,
-        ];
-    }
-
     public function getEnvironmentSetUp($app): void
     {
         config()->set('database.default', 'testing');
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [RateLimitingServiceProvider::class];
     }
 }
