@@ -83,7 +83,7 @@ class RateLimitingServiceProvider extends ServiceProvider
         // Publish views (optional)
         $this->publishes(
             [
-                __DIR__ . '/../../resources/views' => resource_path('views/vendor/milenmk/laravel-rate-limiting'),
+                __DIR__ . '/../../resources/views' => resource_path('views/vendor/laravel-rate-limiting'),
             ],
             'laravel-rate-limiting-views',
         );
