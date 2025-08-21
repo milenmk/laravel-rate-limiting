@@ -141,6 +141,10 @@ class RateLimitingServiceProvider extends ServiceProvider
         $configField = Config::get('rate-limiting.username_field', 'email');
         $value = $request->input($configField);
         if ($value !== null) {
+            if (is_array($value)) {
+                return implode(',', $value); // joins array elements
+            }
+
             return (string) $value;
         }
 
@@ -245,7 +249,7 @@ class RateLimitingServiceProvider extends ServiceProvider
         // Check if user is approaching the limit and provide warning (after incrementing)
         $attemptsAfterHit = $currentAttempts + 1;
         $remainingAttempts = $maxAttempts - $attemptsAfterHit;
-        if ($remainingAttempts <= 2 && $remainingAttempts > 0) {
+        if (($remainingAttempts <= 2 && $remainingAttempts > 0) || $maxAttempts === $attemptsAfterHit) {
             // Add a warning message for approaching limit
             $warningMessage = $this->getWarningMessage($limiterType, $remainingAttempts);
             session()->flash('rate_limit_warning', $warningMessage);
@@ -312,30 +316,6 @@ class RateLimitingServiceProvider extends ServiceProvider
     }
 
     /**
-     * Get warning message for users approaching rate limit
-     */
-    private function getWarningMessage(string $limiterType, int $remainingAttempts): string
-    {
-        // Get base warning message from config
-        $baseMessage = Config::get(
-            'rate-limiting.warning_messages.base',
-            'You have :attempts attempt(s) remaining before a temporary lockout.',
-        );
-        $baseMessage = __($baseMessage, ['attempts' => $remainingAttempts]);
-
-        // Get suggestion from config
-        $suggestion = Config::get("rate-limiting.warning_messages.suggestions.{$limiterType}");
-        if (! $suggestion) {
-            $suggestion = Config::get(
-                'rate-limiting.warning_messages.suggestions.default',
-                'Please verify your information before continuing.',
-            );
-        }
-
-        return $baseMessage . ' ' . __($suggestion);
-    }
-
-    /**
      * Calculate decay time based on growth strategy
      */
     private function calculateDecayTime(int $attempts, string $growthStrategy): int
@@ -375,5 +355,29 @@ class RateLimitingServiceProvider extends ServiceProvider
         }
 
         return $b;
+    }
+
+    /**
+     * Get warning message for users approaching rate limit
+     */
+    private function getWarningMessage(string $limiterType, int $remainingAttempts): string
+    {
+        // Get base warning message from config
+        $baseMessage = Config::get(
+            'rate-limiting.warning_messages.base',
+            'You have :attempts attempt(s) remaining before a temporary lockout.',
+        );
+        $baseMessage = __($baseMessage, ['attempts' => $remainingAttempts]);
+
+        // Get suggestion from config
+        $suggestion = Config::get("rate-limiting.warning_messages.suggestions.{$limiterType}");
+        if (! $suggestion) {
+            $suggestion = Config::get(
+                'rate-limiting.warning_messages.suggestions.default',
+                'Please verify your information before continuing.',
+            );
+        }
+
+        return $baseMessage . ' ' . __($suggestion);
     }
 }

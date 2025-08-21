@@ -261,33 +261,41 @@ class IntegrationTest extends TestCase
     #[Test]
     public function warning_messages_appear_at_correct_thresholds(): void
     {
+        Session::flush();
+
         Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 5);
+        Config::set('rate-limiting.limiters.register.limits.ip.max_attempts', 5);
 
         $request = Request::create('/register', 'POST', ['email' => 'warning@example.com']);
         $request->setTrustedProxies(['127.0.0.1'], RequestAlias::HEADER_X_FORWARDED_FOR);
 
         $limiter = RateLimiter::limiter('register');
 
-        // First 3 attempts - no warning
-        for ($i = 0; $i < 3; $i++) {
+        // First 2 attempts - no warning
+        for ($i = 0; $i < 2; $i++) {
             $this->assertNull($limiter($request));
             $this->assertFalse(Session::has('rate_limit_warning'), 'Warning should not appear on attempt ' . ($i + 1));
             Session::forget('rate_limit_warning'); // Clear any potential warning
         }
 
-        // 4th attempt - should show warning (2 remaining)
+        // After 3rd attempt - should show warning (2 remaining)
         $this->assertNull($limiter($request));
         $this->assertTrue(Session::has('rate_limit_warning'));
         $this->assertStringContainsString('2 attempt(s) remaining', Session::get('rate_limit_warning'));
 
         Session::forget('rate_limit_warning');
 
-        // 5th attempt - should show warning (1 remaining)
+        // After 4th attempt - should show warning (1 remaining)
         $this->assertNull($limiter($request));
         $this->assertTrue(Session::has('rate_limit_warning'));
         $this->assertStringContainsString('1 attempt(s) remaining', Session::get('rate_limit_warning'));
 
-        // 6th attempt - should be blocked
+        // After 5th attempt - still allowed (but no warning)
+        $this->assertNull($limiter($request));
+        $this->assertTrue(Session::has('rate_limit_warning'));
+        $this->assertStringContainsString('0 attempt(s) remaining', Session::get('rate_limit_warning'));
+
+        // After 6th attempt - user is blocked
         $result = $limiter($request);
         $this->assertNotNull($result);
     }

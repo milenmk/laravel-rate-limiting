@@ -138,7 +138,7 @@ class UsernameResolutionTest extends TestCase
         // Test with array value
         $request = Request::create('/', 'POST', ['email' => ['test@example.com']]);
         $result = $this->callResolveUsername($request);
-        $this->assertEquals('Array', $result); // PHP converts array to string "Array"
+        $this->assertEquals('test@example.com', $result);
 
         // Test with numeric value
         $request = Request::create('/', 'POST', ['email' => 12345]);

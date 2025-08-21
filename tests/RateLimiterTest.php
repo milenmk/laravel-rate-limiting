@@ -171,7 +171,8 @@ class RateLimiterTest extends TestCase
     #[Test]
     public function rate_limiter_shows_warning_when_approaching_limit(): void
     {
-        Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 3);
+        Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 4);
+        Config::set('rate-limiting.limiters.register.limits.ip.max_attempts', 4);
 
         $request = Request::create('/register', 'POST', ['email' => 'test@example.com']);
         $request->setTrustedProxies(['127.0.0.1'], RequestAlias::HEADER_X_FORWARDED_FOR);
@@ -182,10 +183,20 @@ class RateLimiterTest extends TestCase
         $this->assertNull($limiter($request));
         $this->assertFalse(Session::has('rate_limit_warning'));
 
-        // Second attempt - should show warning (1 remaining)
+        // Second attempt - should show warning (2 remaining)
+        $this->assertNull($limiter($request));
+        $this->assertTrue(Session::has('rate_limit_warning'));
+        $this->assertStringContainsString('2 attempt(s) remaining', Session::get('rate_limit_warning'));
+
+        // Third attempt - should show warning (1 remaining)
         $this->assertNull($limiter($request));
         $this->assertTrue(Session::has('rate_limit_warning'));
         $this->assertStringContainsString('1 attempt(s) remaining', Session::get('rate_limit_warning'));
+
+        // Fourth attempt - should show warning (0 remaining)
+        $this->assertNull($limiter($request));
+        $this->assertTrue(Session::has('rate_limit_warning'));
+        $this->assertStringContainsString('0 attempt(s) remaining', Session::get('rate_limit_warning'));
     }
 
     #[Test]
