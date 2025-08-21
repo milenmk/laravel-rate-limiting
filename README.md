@@ -31,7 +31,6 @@ The system is built around a dedicated service provider that implements a config
 
 - PHP 8.2 or higher
 - Laravel 10.x, 11.x, or 12.x
-- Laravel Fortify (for authentication endpoints)
 
 ## Installation
 
@@ -186,8 +185,52 @@ RATE_LIMITING_LOGIN_GROWTH=linear
 RATE_LIMITING_LOGIN_USERNAME_IP_MAX_ATTEMPTS=5
 RATE_LIMITING_LOGIN_IP_MAX_ATTEMPTS=10
 
+# Username field configuration (optional)
+RATE_LIMITING_USERNAME_FIELD=email
+
 # And many more...
 ```
+
+### Username Resolution Configuration
+
+The package provides flexible username field resolution for the `username_ip` rate limiter:
+
+#### Simple Configuration (Most Users)
+
+Set the field name in your `.env` file:
+
+```env
+# Use 'email' field (default)
+RATE_LIMITING_USERNAME_FIELD=email
+
+# Or use 'username' field
+RATE_LIMITING_USERNAME_FIELD=username
+
+# Or use any custom field
+RATE_LIMITING_USERNAME_FIELD=login_id
+```
+
+#### Advanced Configuration (Custom Logic)
+
+For complex scenarios, define a custom resolver in your `AppServiceProvider`:
+
+```php
+// In AppServiceProvider::boot()
+Config::set('rate-limiting.username_resolver', function (Request $request) {
+    // Use authenticated user's email if available
+    if ($user = $request->user()) {
+        return $user->email;
+    }
+
+    // Fallback to request input with multiple field support
+    return $request->input('email') ?? ($request->input('username') ?? 'anonymous');
+});
+```
+
+#### Fortify Integration (Automatic)
+
+If Laravel Fortify is installed, the package automatically uses Fortify's configured username field. No additional
+configuration needed.
 
 ### Configuration Examples
 
@@ -367,13 +410,22 @@ Both components accept the following properties:
 
 ### Automatic Integration
 
-The package automatically integrates with Laravel Fortify's authentication endpoints. No additional setup is required -
-rate limiting will be applied to:
+The package automatically integrates with Laravel's authentication system and works seamlessly with or without Laravel
+Fortify. No additional setup is required - rate limiting will be applied to:
 
 - Registration attempts
 - Login attempts
 - Password reset requests
 - Two-factor authentication attempts
+
+#### Username Field Resolution
+
+The package uses an intelligent hybrid approach to resolve username fields:
+
+1. **Custom Resolver** (Advanced): Define a custom callback for complex logic
+2. **Fortify Integration** (Automatic): Uses Fortify's username field if installed
+3. **Configurable Field** (Simple): Set `username_field` in config (default: 'email')
+4. **Smart Fallback** (Automatic): Tries common field names (email, username, login, etc.)
 
 ## Message Customization
 
@@ -620,7 +672,7 @@ The system is designed for easy extension. To add a new limiter:
 ## Testing
 
 ```bash
-composer test
+vendor/bin/phpunit test
 ```
 
 ## Changelog
@@ -633,12 +685,12 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+Please review [our security policy](SECURITY.md) on how to report security vulnerabilities.
 
 ## Credits
 
 - [Milen Karaganski](https://github.com/milenmk)
-- [All Contributors](../../contributors)
+- [All Contributors](CONTRIBUTORS.md)
 
 ## License
 

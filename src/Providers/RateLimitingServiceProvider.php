@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Laravel\Fortify\Fortify;
 
 class RateLimitingServiceProvider extends ServiceProvider
 {
@@ -39,7 +38,7 @@ class RateLimitingServiceProvider extends ServiceProvider
             'login' => [
                 'global' => fn () => 'global',
                 'username_ip' => fn (Request $request) => 'username_ip:' .
-                    Str::transliterate(Str::lower($request->input(Fortify::username()))) .
+                    Str::transliterate(Str::lower($this->resolveUsername($request))) .
                     '|' .
                     $request->ip(),
                 'ip' => fn (Request $request) => 'ip:' . $request->ip(),
@@ -99,6 +98,55 @@ class RateLimitingServiceProvider extends ServiceProvider
         foreach ($this->limiterConfigurations as $limiterName => $limitTypes) {
             $this->configureRateLimiter($limiterName, $limitTypes);
         }
+    }
+
+    /**
+     * Resolve the username field from the request with intelligent fallback
+     *
+     * This method provides a hybrid approach for username resolution:
+     * 1. Check for custom resolver callback (advanced users)
+     * 2. Use Fortify's username field if Fortify is installed
+     * 3. Fallback to configurable field name (most users)
+     * 4. Try common field names as last resort
+     */
+    private function resolveUsername(Request $request): string
+    {
+        // Check for custom resolver first (advanced users)
+        $resolver = Config::get('rate-limiting.username_resolver');
+        if ($resolver && is_callable($resolver)) {
+            $result = $resolver($request);
+            if ($result !== null) {
+                return (string) $result;
+            }
+        }
+
+        // Use Fortify's username field if Fortify is available
+        $fortifyClass = 'Laravel\Fortify\Fortify';
+        if (class_exists($fortifyClass)) {
+            $field = $fortifyClass::username();
+            $value = $request->input($field);
+            if ($value !== null) {
+                return (string) $value;
+            }
+        }
+
+        // Fallback to configurable field name
+        $configField = Config::get('rate-limiting.username_field', 'email');
+        $value = $request->input($configField);
+        if ($value !== null) {
+            return (string) $value;
+        }
+
+        // Try common field names as last resort
+        $commonFields = ['email', 'username', 'login', 'user_email', 'user_name'];
+        foreach ($commonFields as $field) {
+            $value = $request->input($field);
+            if ($value !== null) {
+                return (string) $value;
+            }
+        }
+
+        return 'unknown';
     }
 
     /**

@@ -27,6 +27,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Username Resolution Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure how the package resolves username fields for rate limiting.
+    | The package uses a hybrid approach with intelligent fallbacks.
+    |
+    */
+    'username_field' => env('RATE_LIMITING_USERNAME_FIELD', 'email'),
+    'username_resolver' => null, // Custom callback for advanced username resolution
+
+    /*
+    |--------------------------------------------------------------------------
     | Rate Limiters Configuration
     |--------------------------------------------------------------------------
     |

@@ -28,8 +28,10 @@
         "illuminate/config": "^10.0|^11.0|^12.0",
         "illuminate/http": "^10.0|^11.0|^12.0",
         "illuminate/support": "^10.0|^11.0|^12.0",
-        "illuminate/view": "^10.0|^11.0|^12.0",
-        "laravel/fortify": "^1.13"
+        "illuminate/view": "^10.0|^11.0|^12.0"
+    },
+    "suggest": {
+        "laravel/fortify": "^1.13 - For automatic username field detection in authentication forms"
     },
     "require-dev": {
         "laravel/pint": "^1.0",

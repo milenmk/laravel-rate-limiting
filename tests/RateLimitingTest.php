@@ -31,4 +31,11 @@ class RateLimitingTest extends TestCase
         $this->assertTrue(Config::get('rate-limiting.enabled'));
         $this->assertEquals('linear', Config::get('rate-limiting.limiters.register.growth_strategy'));
     }
+
+    /** @test */
+    public function it_has_username_resolution_config(): void
+    {
+        $this->assertEquals('email', Config::get('rate-limiting.username_field'));
+        $this->assertNull(Config::get('rate-limiting.username_resolver'));
+    }
 }
