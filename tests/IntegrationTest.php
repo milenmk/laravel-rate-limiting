@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
 use Milenmk\LaravelRateLimiting\Providers\RateLimitingServiceProvider;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Request as RequestAlias;
 
 class IntegrationTest extends TestCase
@@ -27,9 +28,7 @@ class IntegrationTest extends TestCase
         RateLimiter::clear('login:ip:127.0.0.1');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function complete_rate_limiting_flow_for_registration(): void
     {
         Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 2);
@@ -65,9 +64,7 @@ class IntegrationTest extends TestCase
         $this->assertInstanceOf(Limit::class, $result3);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function complete_rate_limiting_flow_for_login(): void
     {
         Config::set('rate-limiting.limiters.login.limits.username_ip.max_attempts', 2);
@@ -93,9 +90,7 @@ class IntegrationTest extends TestCase
         $this->assertInstanceOf(Limit::class, $result3);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function multiple_limiters_working_together(): void
     {
         Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 1);
@@ -130,9 +125,7 @@ class IntegrationTest extends TestCase
         $this->assertNotNull($result4);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function different_growth_strategies_produce_different_decay_times(): void
     {
         // This test verifies that different growth strategies actually affect the system
@@ -165,9 +158,7 @@ class IntegrationTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limiting_with_custom_username_resolver(): void
     {
         Config::set('rate-limiting.username_resolver', function (Request $request) {
@@ -194,9 +185,7 @@ class IntegrationTest extends TestCase
         $this->assertNull($limiter($request2));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limiting_disabled_globally(): void
     {
         Config::set('rate-limiting.enabled', false);
@@ -214,9 +203,7 @@ class IntegrationTest extends TestCase
         $this->assertNull($limiter);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limiting_with_session_based_two_factor(): void
     {
         Config::set('rate-limiting.limiters.two-factor.limits.session.max_attempts', 2);
@@ -245,9 +232,7 @@ class IntegrationTest extends TestCase
         $this->assertNull($limiter($request));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limiting_response_excludes_sensitive_data(): void
     {
         Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 1);
@@ -272,9 +257,7 @@ class IntegrationTest extends TestCase
         $this->assertInstanceOf(Limit::class, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function warning_messages_appear_at_correct_thresholds(): void
     {
         Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 5);

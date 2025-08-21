@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Request as RequestAlias;
 
 class RateLimiterTest extends TestCase
@@ -27,9 +28,7 @@ class RateLimiterTest extends TestCase
         RateLimiter::clear('two-factor:session:test-session');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_rate_limiter_allows_requests_within_limit(): void
     {
         Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 3);
@@ -45,9 +44,7 @@ class RateLimiterTest extends TestCase
         $this->assertNull($limiter($request));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_rate_limiter_blocks_requests_over_limit(): void
     {
         Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 2);
@@ -66,9 +63,7 @@ class RateLimiterTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function login_rate_limiter_with_username_ip(): void
     {
         Config::set('rate-limiting.limiters.login.limits.username_ip.max_attempts', 2);
@@ -87,9 +82,7 @@ class RateLimiterTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function forgot_password_rate_limiter(): void
     {
         Config::set('rate-limiting.limiters.forgot-password.limits.email.max_attempts', 2);
@@ -108,9 +101,7 @@ class RateLimiterTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function two_factor_rate_limiter_with_session(): void
     {
         Config::set('rate-limiting.limiters.two-factor.limits.session.max_attempts', 2);
@@ -133,9 +124,7 @@ class RateLimiterTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limiter_logs_violations_when_enabled(): void
     {
         Config::set('rate-limiting.log_violations', true);
@@ -158,9 +147,7 @@ class RateLimiterTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limiter_does_not_log_when_disabled(): void
     {
         Config::set('rate-limiting.log_violations', false);
@@ -181,9 +168,7 @@ class RateLimiterTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limiter_shows_warning_when_approaching_limit(): void
     {
         Config::set('rate-limiting.limiters.register.limits.email.max_attempts', 3);
@@ -203,9 +188,7 @@ class RateLimiterTest extends TestCase
         $this->assertStringContainsString('1 attempt(s) remaining', Session::get('rate_limit_warning'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function disabled_limit_types_are_ignored(): void
     {
         Config::set('rate-limiting.limiters.register.limits.email.enabled', false);
@@ -226,9 +209,7 @@ class RateLimiterTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function global_limits_work(): void
     {
         Config::set('rate-limiting.limiters.register.limits.global.enabled', true);

@@ -17,9 +17,8 @@ class UsernameResolutionTest extends TestCase
 {
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function custom_resolver_takes_priority(): void
     {
         Config::set('rate-limiting.username_resolver', function (Request $request) {
@@ -35,9 +34,8 @@ class UsernameResolutionTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function custom_resolver_fallback_when_returns_null(): void
     {
         Config::set('rate-limiting.username_resolver', function () {

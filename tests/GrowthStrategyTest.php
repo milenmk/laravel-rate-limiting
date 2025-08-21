@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\RateLimiter;
 use Milenmk\LaravelRateLimiting\Providers\RateLimitingServiceProvider;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Request as RequestAlias;
@@ -16,9 +17,8 @@ class GrowthStrategyTest extends TestCase
 {
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function linear_growth_strategy(): void
     {
         Config::set('rate-limiting.max_suspension_time', 3600);
@@ -32,9 +32,8 @@ class GrowthStrategyTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function exponential_growth_strategy(): void
     {
         Config::set('rate-limiting.max_suspension_time', 3600);
@@ -49,9 +48,8 @@ class GrowthStrategyTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function fibonacci_growth_strategy(): void
     {
         Config::set('rate-limiting.max_suspension_time', 3600);
@@ -67,9 +65,8 @@ class GrowthStrategyTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function unknown_growth_strategy_defaults_to_linear(): void
     {
         Config::set('rate-limiting.max_suspension_time', 3600);
@@ -82,9 +79,8 @@ class GrowthStrategyTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function max_suspension_time_is_respected(): void
     {
         Config::set('rate-limiting.max_suspension_time', 300); // 5 minutes max
@@ -96,9 +92,8 @@ class GrowthStrategyTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function fibonacci_sequence_calculation(): void
     {
         // Test Fibonacci sequence: 1, 2, 3, 5, 8, 13, 21, 34, 55, 89...
@@ -117,9 +112,8 @@ class GrowthStrategyTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function fibonacci_with_negative_input(): void
     {
         // Negative input should return 1
@@ -127,9 +121,7 @@ class GrowthStrategyTest extends TestCase
         $this->assertEquals(1, $this->callGetFibonacci(-5));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function growth_strategies_in_actual_rate_limiting(): void
     {
         // Test that different growth strategies actually affect rate limiting behavior
@@ -166,9 +158,8 @@ class GrowthStrategyTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function max_suspension_time_configuration(): void
     {
         // Test default max suspension time

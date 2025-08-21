@@ -6,6 +6,7 @@ namespace Milenmk\LaravelRateLimiting\Tests;
 
 use Illuminate\Support\Facades\Config;
 use Milenmk\LaravelRateLimiting\Providers\RateLimitingServiceProvider;
+use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 use ReflectionException;
 
@@ -13,9 +14,8 @@ class MessageCustomizationTest extends TestCase
 {
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function custom_rate_limit_messages(): void
     {
         // Test register email message
@@ -41,9 +41,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function default_message_fallback(): void
     {
         // Test with non-existent limiter type
@@ -59,9 +58,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function wait_time_calculation_in_messages(): void
     {
         // Test seconds to minutes conversion
@@ -80,9 +78,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function suggestions_for_login_limiter(): void
     {
         // Test low attempts suggestion
@@ -96,9 +93,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function suggestions_for_two_factor_limiter(): void
     {
         // Test low attempts suggestion
@@ -112,9 +108,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function suggestions_for_other_limiters(): void
     {
         // Test register suggestion
@@ -128,9 +123,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function default_suggestion_fallback(): void
     {
         $suggestion = $this->callGetSuggestions('nonexistent', 3);
@@ -139,9 +133,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function warning_messages(): void
     {
         // Test login warning
@@ -167,9 +160,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function default_warning_fallback(): void
     {
         $warning = $this->callGetWarningMessage('nonexistent', 2);
@@ -179,9 +171,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function custom_message_configuration(): void
     {
         // Test custom message override
@@ -193,9 +184,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function custom_suggestion_configuration(): void
     {
         // Test custom suggestion override
@@ -207,9 +197,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function custom_warning_configuration(): void
     {
         // Test custom warning base message
@@ -227,9 +216,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function message_includes_suggestions(): void
     {
         $message = $this->callGetRateLimitMessage('login', 'username_ip', 120, 5);
@@ -241,9 +229,8 @@ class MessageCustomizationTest extends TestCase
 
     /**
      * @throws ReflectionException
-     *
-     * @test
      */
+    #[Test]
     public function empty_suggestion_handling(): void
     {
         // Set empty suggestion

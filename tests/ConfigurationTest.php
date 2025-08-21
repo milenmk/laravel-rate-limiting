@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Milenmk\LaravelRateLimiting\Tests;
 
 use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\Attributes\Test;
 
 class ConfigurationTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function default_configuration_values(): void
     {
         // Test global settings
@@ -23,9 +22,7 @@ class ConfigurationTest extends TestCase
         $this->assertNull(Config::get('rate-limiting.username_resolver'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_limiter_configuration(): void
     {
         $registerConfig = Config::get('rate-limiting.limiters.register');
@@ -44,9 +41,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals(3, $registerConfig['limits']['ip']['max_attempts']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function login_limiter_configuration(): void
     {
         $loginConfig = Config::get('rate-limiting.limiters.login');
@@ -65,9 +60,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals(10, $loginConfig['limits']['ip']['max_attempts']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function forgot_password_limiter_configuration(): void
     {
         $forgotConfig = Config::get('rate-limiting.limiters.forgot-password');
@@ -86,9 +79,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals(5, $forgotConfig['limits']['ip']['max_attempts']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function two_factor_limiter_configuration(): void
     {
         $twoFactorConfig = Config::get('rate-limiting.limiters.two-factor');
@@ -107,9 +98,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals(10, $twoFactorConfig['limits']['ip']['max_attempts']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limit_messages_configuration(): void
     {
         // Test register messages
@@ -151,9 +140,7 @@ class ConfigurationTest extends TestCase
         $this->assertStringContainsString(':minutes', $defaultMessage);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function warning_messages_configuration(): void
     {
         $warningMessages = Config::get('rate-limiting.warning_messages');
@@ -170,9 +157,7 @@ class ConfigurationTest extends TestCase
         $this->assertStringContainsString('verify your information', $suggestions['default']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function suggestion_messages_configuration(): void
     {
         $suggestions = Config::get('rate-limiting.suggestions');
@@ -196,9 +181,7 @@ class ConfigurationTest extends TestCase
         $this->assertStringContainsString('wait before trying again', $suggestions['default']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function environment_variable_overrides(): void
     {
         // Test that environment variables can override config values
@@ -212,9 +195,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals('username', Config::get('rate-limiting.username_field'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function limiter_specific_environment_overrides(): void
     {
         // Test register limiter overrides
@@ -228,9 +209,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals(5, Config::get('rate-limiting.limiters.register.limits.email.max_attempts'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function message_environment_overrides(): void
     {
         // Test custom message override
@@ -241,9 +220,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals('Custom default message', Config::get('rate-limiting.messages.default'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function configuration_structure_integrity(): void
     {
         // Ensure all required configuration keys exist
@@ -272,9 +249,7 @@ class ConfigurationTest extends TestCase
         $this->assertArrayHasKey('suggestions', $config);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function growth_strategy_values(): void
     {
         $validStrategies = ['linear', 'exponential', 'fibonacci'];
@@ -289,9 +264,7 @@ class ConfigurationTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function max_attempts_are_positive_integers(): void
     {
         foreach (Config::get('rate-limiting.limiters') as $limiterName => $limiterConfig) {
@@ -307,9 +280,7 @@ class ConfigurationTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function boolean_configuration_values(): void
     {
         // Test boolean values are actually booleans
@@ -320,7 +291,10 @@ class ConfigurationTest extends TestCase
             $this->assertIsBool($limiterConfig['enabled'], "enabled for {$limiterName} should be boolean");
 
             foreach ($limiterConfig['limits'] as $limitType => $limitConfig) {
-                $this->assertIsBool($limitConfig['enabled'], "enabled for {$limiterName}.{$limitType} should be boolean");
+                $this->assertIsBool(
+                    $limitConfig['enabled'],
+                    "enabled for {$limiterName}.{$limitType} should be boolean",
+                );
             }
         }
     }

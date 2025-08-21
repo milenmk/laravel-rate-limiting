@@ -10,20 +10,17 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\RateLimiter;
 use Milenmk\LaravelRateLimiting\Providers\RateLimitingServiceProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 class ServiceProviderTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function service_provider_is_registered(): void
     {
         $this->assertTrue($this->app->providerIsLoaded(RateLimitingServiceProvider::class));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function config_is_merged(): void
     {
         $this->assertTrue(Config::has('rate-limiting'));
@@ -31,9 +28,7 @@ class ServiceProviderTest extends TestCase
         $this->assertEquals('linear', Config::get('rate-limiting.limiters.register.growth_strategy'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function config_can_be_published(): void
     {
         $configPath = config_path('rate-limiting.php');
@@ -54,9 +49,7 @@ class ServiceProviderTest extends TestCase
         File::delete($configPath);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function env_example_can_be_published(): void
     {
         $envPath = base_path('.env.rate-limiting.example');
@@ -77,18 +70,14 @@ class ServiceProviderTest extends TestCase
         File::delete($envPath);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function views_are_loaded(): void
     {
         $this->assertTrue($this->app['view']->exists('rate-limiting::components.error-message'));
         $this->assertTrue($this->app['view']->exists('rate-limiting::components.warning-message'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function views_can_be_published(): void
     {
         $viewsPath = resource_path('views/vendor/milenmk/laravel-rate-limiting');
@@ -111,18 +100,14 @@ class ServiceProviderTest extends TestCase
         File::deleteDirectory($viewsPath);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_components_are_registered(): void
     {
         $component = Blade::getAnonymousComponentNamespace('rate-limiting::components');
         $this->assertNotNull($component);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limiters_are_configured_when_enabled(): void
     {
         Config::set('rate-limiting.enabled', true);
@@ -138,9 +123,7 @@ class ServiceProviderTest extends TestCase
         $this->assertTrue(RateLimiter::limiter('two-factor') !== null);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rate_limiters_are_not_configured_when_disabled(): void
     {
         Config::set('rate-limiting.enabled', false);
@@ -156,9 +139,7 @@ class ServiceProviderTest extends TestCase
         $this->assertNull(RateLimiter::limiter('register'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function individual_limiters_can_be_disabled(): void
     {
         Config::set('rate-limiting.limiters.register.enabled', false);
