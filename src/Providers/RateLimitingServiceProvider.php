@@ -92,6 +92,13 @@ class RateLimitingServiceProvider extends ServiceProvider
         Blade::anonymousComponentNamespace('rate-limiting::components', '');
 
         if (! Config::get('rate-limiting.enabled', true)) {
+            // Clear any existing limiters when disabled
+            if (isset($this->limiterConfigurations)) {
+                foreach (array_keys($this->limiterConfigurations) as $limiterName) {
+                    RateLimiter::for($limiterName, fn () => null);
+                }
+            }
+
             return;
         }
 
@@ -229,19 +236,20 @@ class RateLimitingServiceProvider extends ServiceProvider
             });
         }
 
-        // Check if user is approaching the limit and provide warning
-        $remainingAttempts = $maxAttempts - $currentAttempts;
-        if ($remainingAttempts <= 2 && $remainingAttempts > 0) {
-            // Add a warning message for approaching limit
-            $warningMessage = $this->getWarningMessage($limiterType, $remainingAttempts);
-            session()->flash('rate_limit_warning', $warningMessage);
-        }
-
         // Calculate decay time based on growth strategy
         $decay = $this->calculateDecayTime($currentAttempts, $growthStrategy);
 
         // Increment the counter with custom decay (suspension time)
         RateLimiter::hit($key, $decay);
+
+        // Check if user is approaching the limit and provide warning (after incrementing)
+        $attemptsAfterHit = $currentAttempts + 1;
+        $remainingAttempts = $maxAttempts - $attemptsAfterHit;
+        if ($remainingAttempts <= 2 && $remainingAttempts > 0) {
+            // Add a warning message for approaching limit
+            $warningMessage = $this->getWarningMessage($limiterType, $remainingAttempts);
+            session()->flash('rate_limit_warning', $warningMessage);
+        }
 
         return true; // allow attempt
     }
