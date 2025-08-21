@@ -6,7 +6,7 @@ Thank you to all the people who have contributed to this project! 🎉
 
 ### Maintainers
 
-- **[Milen MK](https://github.com/milenmk)** - *Creator and Lead Maintainer*
+- **[Milen MK](https://github.com/milenmk)** - _Creator and Lead Maintainer_
     - Initial package development
     - Architecture design and implementation
     - Documentation and examples
@@ -18,14 +18,14 @@ We welcome contributions from the community! Here are several ways you can help:
 
 ### 🐛 Bug Reports
 
-- Report bugs through [GitHub Issues](https://github.com/milenmk/laravel-email-change-confirmation/issues)
+- Report bugs through [GitHub Issues](https://github.com/milenmk/laravel-rate-limitingrmation/issues)
 - Include detailed reproduction steps
 - Provide Laravel/PHP version information
 - Include relevant code snippets
 
 ### 💡 Feature Requests
 
-- Suggest new features via [GitHub Issues](https://github.com/milenmk/laravel-email-change-confirmation/issues)
+- Suggest new features via [GitHub Issues](https://github.com/milenmk/laravel-rate-limitingrmation/issues)
 - Explain the use case and benefits
 - Provide implementation ideas if possible
 
@@ -73,7 +73,7 @@ We recognize various types of contributions:
 
 ### Hall of Fame
 
-*Contributors will be listed here as they make their contributions to the project.*
+_Contributors will be listed here as they make their contributions to the project._
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -98,8 +98,8 @@ This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participatin
 ### Getting Help
 
 - 📖 Read the [documentation](README.md)
-- 🔍 Search [existing issues](https://github.com/milenmk/laravel-email-change-confirmation/issues)
-- 💬 Start a [discussion](https://github.com/milenmk/laravel-email-change-confirmation/discussions)
+- 🔍 Search [existing issues](https://github.com/milenmk/laravel-rate-limitingrmation/issues)
+- 💬 Start a [discussion](https://github.com/milenmk/laravel-rate-limitingrmation/discussions)
 - 📧 Contact maintainers for security issues
 
 ### Recognition Process
@@ -142,4 +142,4 @@ Every contribution, no matter how small, is valuable and appreciated! 🙏
 
 ---
 
-*This contributors file is maintained manually. If you've contributed and don't see your name, please let us know!*
+_This contributors file is maintained manually. If you've contributed and don't see your name, please let us know!_

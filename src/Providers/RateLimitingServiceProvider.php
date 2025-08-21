@@ -27,10 +27,7 @@ class RateLimitingServiceProvider extends ServiceProvider
         parent::register();
 
         // Merge package config with application config
-        $this->mergeConfigFrom(
-            __DIR__.'/../../config/rate-limiting.php',
-            'rate-limiting'
-        );
+        $this->mergeConfigFrom(__DIR__ . '/../../config/rate-limiting.php', 'rate-limiting');
 
         // Initialize the property dynamically here
         $this->limiterConfigurations = [
@@ -66,22 +63,31 @@ class RateLimitingServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Publish config file
-        $this->publishes([
-            __DIR__.'/../../config/rate-limiting.php' => config_path('rate-limiting.php'),
-        ], 'rate-limiting-config');
+        $this->publishes(
+            [
+                __DIR__ . '/../../config/rate-limiting.php' => config_path('rate-limiting.php'),
+            ],
+            'rate-limiting-config',
+        );
 
         // Publish .env example file
-        $this->publishes([
-            __DIR__.'/../../.env.rate-limiting.example' => base_path('.env.rate-limiting.example'),
-        ], 'rate-limiting-env');
+        $this->publishes(
+            [
+                __DIR__ . '/../../.env.rate-limiting.example' => base_path('.env.rate-limiting.example'),
+            ],
+            'rate-limiting-env',
+        );
 
         // Load views
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'rate-limiting');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'rate-limiting');
 
         // Publish views (optional)
-        $this->publishes([
-            __DIR__.'/../../resources/views' => resource_path('views/vendor/milenmk/laravel-rate-limiting'),
-        ], 'rate-limiting-views');
+        $this->publishes(
+            [
+                __DIR__ . '/../../resources/views' => resource_path('views/vendor/milenmk/laravel-rate-limiting'),
+            ],
+            'rate-limiting-views',
+        );
 
         // Register Blade components
         Blade::anonymousComponentNamespace('rate-limiting::components', '');
@@ -100,12 +106,12 @@ class RateLimitingServiceProvider extends ServiceProvider
      */
     private function configureRateLimiter(string $limiterName, array $limitTypes): void
     {
-        if (! Config::get("rate-limiting.limiters.$limiterName.enabled", true)) {
+        if (! Config::get("rate-limiting.limiters.{$limiterName}.enabled", true)) {
             return;
         }
 
         RateLimiter::for($limiterName, function (Request $request) use ($limiterName, $limitTypes) {
-            $limiterConfig = Config::get("rate-limiting.limiters.$limiterName");
+            $limiterConfig = Config::get("rate-limiting.limiters.{$limiterName}");
 
             foreach ($limitTypes as $limitType => $keyGenerator) {
                 if (! ($limiterConfig['limits'][$limitType]['enabled'] ?? false)) {
@@ -152,7 +158,7 @@ class RateLimitingServiceProvider extends ServiceProvider
 
             // Log warning about excessive attempts if enabled
             if (Config::get('rate-limiting.log_violations', true)) {
-                Log::warning("Rate limit exceeded for $limiterType:$limitType: $key", [
+                Log::warning("Rate limit exceeded for {$limiterType}:{$limitType}: {$key}", [
                     'wait_seconds' => $wait,
                     'attempts' => $currentAttempts,
                     'ip' => $request->ip(),
@@ -195,12 +201,16 @@ class RateLimitingServiceProvider extends ServiceProvider
     /**
      * Get a user-friendly rate limit message with enhanced information
      */
-    private function getRateLimitMessage(string $limiterType, string $limitType, int $waitSeconds, int $attempts): string
-    {
+    private function getRateLimitMessage(
+        string $limiterType,
+        string $limitType,
+        int $waitSeconds,
+        int $attempts,
+    ): string {
         $waitMinutes = ceil($waitSeconds / 60);
 
         // Get base message from config
-        $message = Config::get("rate-limiting.messages.$limiterType.$limitType");
+        $message = Config::get("rate-limiting.messages.{$limiterType}.{$limitType}");
 
         if (! $message) {
             $message = Config::get(
@@ -228,7 +238,7 @@ class RateLimitingServiceProvider extends ServiceProvider
         // Check if limiter type has high/low attempt suggestions
         if (in_array($limiterType, ['login', 'two-factor'])) {
             $suggestionKey = $attempts >= 3 ? 'high_attempts' : 'low_attempts';
-            $suggestion = Config::get("rate-limiting.suggestions.$limiterType.$suggestionKey");
+            $suggestion = Config::get("rate-limiting.suggestions.{$limiterType}.{$suggestionKey}");
 
             if ($suggestion) {
                 return __($suggestion);
@@ -236,7 +246,7 @@ class RateLimitingServiceProvider extends ServiceProvider
         }
 
         // Get simple suggestion for other limiter types
-        $suggestion = Config::get("rate-limiting.suggestions.$limiterType");
+        $suggestion = Config::get("rate-limiting.suggestions.{$limiterType}");
         if ($suggestion) {
             return __($suggestion);
         }
@@ -251,13 +261,19 @@ class RateLimitingServiceProvider extends ServiceProvider
     private function getWarningMessage(string $limiterType, int $remainingAttempts): string
     {
         // Get base warning message from config
-        $baseMessage = Config::get('rate-limiting.warning_messages.base', 'You have :attempts attempt(s) remaining before a temporary lockout.');
+        $baseMessage = Config::get(
+            'rate-limiting.warning_messages.base',
+            'You have :attempts attempt(s) remaining before a temporary lockout.',
+        );
         $baseMessage = __($baseMessage, ['attempts' => $remainingAttempts]);
 
         // Get suggestion from config
-        $suggestion = Config::get("rate-limiting.warning_messages.suggestions.$limiterType");
+        $suggestion = Config::get("rate-limiting.warning_messages.suggestions.{$limiterType}");
         if (! $suggestion) {
-            $suggestion = Config::get('rate-limiting.warning_messages.suggestions.default', 'Please verify your information before continuing.');
+            $suggestion = Config::get(
+                'rate-limiting.warning_messages.suggestions.default',
+                'Please verify your information before continuing.',
+            );
         }
 
         return $baseMessage . ' ' . __($suggestion);

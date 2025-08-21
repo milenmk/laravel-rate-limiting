@@ -29,7 +29,7 @@ The system is built around a dedicated service provider that implements a config
 
 ## Requirements
 
-- PHP 8.1 or higher
+- PHP 8.2 or higher
 - Laravel 10.x, 11.x, or 12.x
 - Laravel Fortify (for authentication endpoints)
 
@@ -77,7 +77,7 @@ This will publish the views to `resources/views/vendor/milenmk/laravel-rate-limi
 The package protects the following authentication endpoints:
 
 | Endpoint                      | Purpose                 | Default Limits                     |
-|-------------------------------|-------------------------|------------------------------------|
+| ----------------------------- | ----------------------- | ---------------------------------- |
 | **Registration**              | User account creation   | Per-email, per-IP, optional global |
 | **Login**                     | User authentication     | Per-username+IP, per-IP            |
 | **Forgot Password**           | Password reset requests | Per-email, per-IP                  |
@@ -98,7 +98,7 @@ times for attempts beyond the limit. The delay time of 60 min specified in the t
 in the configuration file (default to 60 min).
 
 | Excess Attempt | Linear | Fibonacci | Exponential (2^n) |
-|----------------|--------|-----------|-------------------|
+| -------------- | ------ | --------- | ----------------- |
 | 1st excess     | 1 min  | 1 min     | 1 min             |
 | 2nd excess     | 2 min  | 2 min     | 2 min             |
 | 3rd excess     | 3 min  | 3 min     | 4 min             |

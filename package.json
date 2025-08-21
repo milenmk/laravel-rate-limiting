@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "format-src": "npx prettier --write src/",
-        "format-resources": "npx prettier --write resources/"
+        "format-resources": "npx prettier --write resources/",
+        "prepare": "husky install"
     },
     "dependencies": {
         "autoprefixer": "^10.4.21"
