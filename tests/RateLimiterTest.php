@@ -111,7 +111,7 @@ class RateLimiterTest extends TestCase
 
         // Mock session
         Session::put('login.id', 'test-session');
-        $request->setLaravelSession(Session::getFacadeRoot());
+        $request->setLaravelSession(app('session.store'));
 
         $limiter = RateLimiter::limiter('two-factor');
 
