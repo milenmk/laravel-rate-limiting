@@ -215,14 +215,17 @@ class RateLimitingServiceProvider extends ServiceProvider
     ): Limit|true|Unlimited {
 
         $currentAttempts = RateLimiter::attempts($key);
+        $violationKey = $key . ':violations';
+        $currentViolations = RateLimiter::attempts($violationKey);
 
         // Check if we're already over the limit (before incrementing)
         if ($currentAttempts >= $maxAttempts) {
-            // Calculate how many attempts over the limit we are
-            $attemptsOverLimit = $currentAttempts - $maxAttempts + 1; // +1 for the current attempt
+            // Increment violation counter
+            RateLimiter::hit($violationKey, 3600); // Keep violation count for 1 hour
+            $violationCount = $currentViolations + 1;
 
-            // Calculate new decay time based on how many times over the limit
-            $decay = $this->calculateDecayTime($attemptsOverLimit, $growthStrategy);
+            // Calculate new decay time based on violation count
+            $decay = $this->calculateDecayTime($violationCount, $growthStrategy);
 
             // Clear the existing rate limit and set a new one with the increased decay time
             RateLimiter::clear($key);
@@ -235,7 +238,7 @@ class RateLimitingServiceProvider extends ServiceProvider
                 Log::warning("Rate limit exceeded for {$limiterType}:{$limitType}: {$key}", [
                     'wait_seconds' => $wait,
                     'attempts' => $currentAttempts + 1, // +1 because we're about to count this attempt
-                    'attempts_over_limit' => $attemptsOverLimit,
+                    'violation_count' => $violationCount,
                     'ip' => $request->ip(),
                     'user_agent' => $request->userAgent(),
                     'limiter_type' => $limiterType,
@@ -244,7 +247,7 @@ class RateLimitingServiceProvider extends ServiceProvider
                 ]);
             }
 
-            Log::info("Rate limit exceeded: wait time is {$wait} and decay time is {$decay}, attempts over limit: {$attemptsOverLimit}");
+            Log::info("Rate limit exceeded: wait time is {$wait} and decay time is {$decay}, violation count: {$violationCount}");
 
             // Get custom message with enhanced information
             $message = $this->getRateLimitMessage($limiterType, $limitType, $wait, $currentAttempts + 1);
