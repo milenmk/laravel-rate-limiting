@@ -1,8 +1,9 @@
-@props(['message' => '', 'title' => null, 'class' => 'my-2 p-2'])
+@props(['message' => '', 'title' => null, 'class' => 'my-2 p-2', 'wait_seconds' => null])
 
 @if ($message || session('rate_limit_error'))
     @php
         $displayMessage = $message ?: session('rate_limit_error');
+        $remainingSeconds = $wait_seconds ?? (session('rate_limit_wait_time') ?? null);
     @endphp
 
     <div
@@ -27,4 +28,36 @@
             </div>
         </span>
     </div>
+
+    @if ($remainingSeconds && config('rate-limiting.show_wait_counter', true))
+        <div
+            class="bg-[rgb(248, 113, 113)] border-[rgb(220, 38, 38)] {{ $class }} relative flex items-center rounded border text-white dark:bg-[rgb(231,81,90)]/15"
+        >
+            <div class="font-mono text-sm" id="countdown">
+                Remaining blocked time:
+                <span>{{ gmdate('i:s', $remainingSeconds) }}</span>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                let countdownElement = document.getElementById('countdown').querySelector('span');
+                let remaining = {{ $remainingSeconds }};
+
+                function updateTimer() {
+                    if (remaining > 0) {
+                        remaining--;
+                        let minutes = Math.floor(remaining / 60);
+                        let seconds = remaining % 60;
+                        countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    } else {
+                        // Optionally hide or update the message once countdown is over
+                        countdownElement.textContent = '0:00';
+                        clearInterval(interval);
+                    }
+                }
+
+                let interval = setInterval(updateTimer, 1000);
+            });
+        </script>
+    @endif
 @endif

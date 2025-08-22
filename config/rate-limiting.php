@@ -24,6 +24,7 @@ return [
     'enabled' => env('RATE_LIMITING_ENABLED', true),
     'log_violations' => env('RATE_LIMITING_LOG_VIOLATIONS', true),
     'max_suspension_time' => env('RATE_LIMITING_MAX_SUSPENSION_TIME', 3600), // 1 hour in seconds
+    'show_wait_counter' => env('RATE_LIMITING_SHOW_WAIT_COUNTER', true), // show wait countdown timer on frontend
 
     /*
     |--------------------------------------------------------------------------

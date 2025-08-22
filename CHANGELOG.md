@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.1.0
+
+#### Published at: 2025-08-22
+
+- [FIX] Time increment not properly applied
+- [NEW] Wait time can be shown after a lock is implied. Option can be turned on or off via
+  `RATE_LIMITING_SHOW_WAIT_COUNTER`
+
 ## v1.0.3
 
 #### Published at: 2025-08-22

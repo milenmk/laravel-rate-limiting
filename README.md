@@ -3,6 +3,9 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/milenmk/laravel-rate-limiting.svg?style=flat-square)](https://packagist.org/packages/milenmk/laravel-rate-limiting)
 [![Total Downloads](https://img.shields.io/packagist/dt/milenmk/laravel-rate-limiting.svg?style=flat-square)](https://packagist.org/packages/milenmk/laravel-rate-limiting)
 
+![Screenshot](resources/screenshots/warning_message.png)
+![Screenshot](resources/screenshots/error_message.png)
+
 An advanced rate limiting package for Laravel with exponential backoff, custom messages, and built-in Blade components.
 This package provides comprehensive protection against DDoS attacks, brute force attempts, and other malicious
 activities while maintaining a positive user experience for legitimate users.
@@ -172,6 +175,7 @@ the relevant variables to your `.env` file and adjust as needed:
 RATE_LIMITING_ENABLED=true
 RATE_LIMITING_LOG_VIOLATIONS=true
 RATE_LIMITING_MAX_SUSPENSION_TIME=3600
+RATE_LIMITING_SHOW_WAIT_COUNTER=true
 
 # Registration Rate Limiting
 RATE_LIMITING_REGISTER_ENABLED=true
@@ -347,6 +351,12 @@ Display rate limit errors when limits are exceeded:
 {{-- Two-Factor Authentication Page Example --}}
 <x-error-message field="rate_limit" :title="__('Two-Factor Authentication Temporarily Blocked')" class="my-4 p-4" />
 ```
+
+#### Lock-down timer
+
+By default, when locked is applied, a countdown timer is displayed showing the remaining time until unblocking. You can
+customize the countdown format by setting the `RATE_LIMITING_SHOW_WAIT_COUNTER` property in your application .env file.
+Default value is `true`
 
 #### Warning Messages
 
