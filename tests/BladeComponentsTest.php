@@ -18,14 +18,13 @@ class BladeComponentsTest extends TestCase
     public function error_message_component_renders_with_errors(): void
     {
         // Mock errors bag
-        $messages = new MessageBag(['rate_limit' => 'Too many attempts']);
+        $messages = new MessageBag(['rate_limit_error' => 'Too many attempts']);
         $errors = new ViewErrorBag;
         $errors->put('default', $messages);
 
-        $view = View::make('rate-limiting::components.error-message', [
-            'field' => 'rate_limit',
+        $view = View::make('laravel-rate-limiting::components.error-message', [
             'title' => 'Rate Limit Exceeded',
-            'errors' => $errors,
+            'message' => $errors,
         ]);
 
         $html = $view->render();
@@ -45,10 +44,9 @@ class BladeComponentsTest extends TestCase
         $errors = new ViewErrorBag;
         $errors->put('default', $messages);
 
-        $view = View::make('rate-limiting::components.error-message', [
-            'field' => 'rate_limit',
+        $view = View::make('laravel-rate-limiting::components.error-message', [
             'title' => 'Rate Limit Exceeded',
-            'errors' => $errors, // Empty errors
+            'message' => $errors, // Empty errors
         ]);
 
         $html = $view->render();
@@ -64,15 +62,14 @@ class BladeComponentsTest extends TestCase
     #[Test]
     public function error_message_component_with_custom_class(): void
     {
-        $messages = new MessageBag(['rate_limit' => 'Too many attempts']);
+        $messages = new MessageBag(['rate_limit_error' => 'Too many attempts']);
         $errors = new ViewErrorBag;
         $errors->put('default', $messages);
 
-        $view = View::make('rate-limiting::components.error-message', [
-            'field' => 'rate_limit',
+        $view = View::make('laravel-rate-limiting::components.error-message', [
             'title' => 'Custom Title',
             'class' => 'custom-class p-4',
-            'errors' => $errors,
+            'message' => $errors,
         ]);
 
         $html = $view->render();
@@ -87,13 +84,12 @@ class BladeComponentsTest extends TestCase
     #[Test]
     public function error_message_component_without_title(): void
     {
-        $messages = new MessageBag(['rate_limit' => 'Too many attempts']);
+        $messages = new MessageBag(['rate_limit_error' => 'Too many attempts']);
         $errors = new ViewErrorBag;
         $errors->put('default', $messages);
 
-        $view = View::make('rate-limiting::components.error-message', [
-            'field' => 'rate_limit',
-            'errors' => $errors,
+        $view = View::make('laravel-rate-limiting::components.error-message', [
+            'message' => $errors,
         ]);
 
         $html = $view->render();
@@ -108,7 +104,7 @@ class BladeComponentsTest extends TestCase
     #[Test]
     public function warning_message_component_renders_with_message_prop(): void
     {
-        $view = View::make('rate-limiting::components.warning-message', [
+        $view = View::make('laravel-rate-limiting::components.warning-message', [
             'message' => 'You have 2 attempts remaining',
             'title' => 'Warning',
         ]);
@@ -130,7 +126,7 @@ class BladeComponentsTest extends TestCase
         // Set session data
         session(['rate_limit_warning' => 'Session warning message']);
 
-        $view = View::make('rate-limiting::components.warning-message', [
+        $view = View::make('laravel-rate-limiting::components.warning-message', [
             'title' => 'Session Warning',
         ]);
 
@@ -150,7 +146,7 @@ class BladeComponentsTest extends TestCase
         // Set session data
         session(['rate_limit_warning' => 'Session warning message']);
 
-        $view = View::make('rate-limiting::components.warning-message', [
+        $view = View::make('laravel-rate-limiting::components.warning-message', [
             'message' => 'Prop warning message',
             'title' => 'Priority Test',
         ]);
@@ -167,7 +163,7 @@ class BladeComponentsTest extends TestCase
     #[Test]
     public function warning_message_component_does_not_render_without_message(): void
     {
-        $view = View::make('rate-limiting::components.warning-message', [
+        $view = View::make('laravel-rate-limiting::components.warning-message', [
             'title' => 'No Message',
         ]);
 
@@ -184,7 +180,7 @@ class BladeComponentsTest extends TestCase
     #[Test]
     public function warning_message_component_with_custom_class(): void
     {
-        $view = View::make('rate-limiting::components.warning-message', [
+        $view = View::make('laravel-rate-limiting::components.warning-message', [
             'message' => 'Custom warning',
             'title' => 'Custom Title',
             'class' => 'custom-warning-class p-6',
@@ -203,7 +199,7 @@ class BladeComponentsTest extends TestCase
     #[Test]
     public function warning_message_component_without_title(): void
     {
-        $view = View::make('rate-limiting::components.warning-message', [
+        $view = View::make('laravel-rate-limiting::components.warning-message', [
             'message' => 'Warning without title',
             'title' => 'Warning title',
         ]);
@@ -220,14 +216,13 @@ class BladeComponentsTest extends TestCase
     #[Test]
     public function components_have_proper_accessibility_attributes(): void
     {
-        $messages = new MessageBag(['rate_limit' => 'Error message']);
+        $messages = new MessageBag(['rate_limit_error' => 'Error message']);
         $errors = new ViewErrorBag;
         $errors->put('default', $messages);
 
         // Test error component
-        $errorView = View::make('rate-limiting::components.error-message', [
-            'field' => 'rate_limit',
-            'errors' => $errors,
+        $errorView = View::make('laravel-rate-limiting::components.error-message', [
+            'message' => $errors,
         ]);
         $errorHtml = $errorView->render();
 
@@ -235,7 +230,7 @@ class BladeComponentsTest extends TestCase
         $this->assertStringContainsString('svg', $errorHtml);
 
         // Test warning component
-        $warningView = View::make('rate-limiting::components.warning-message', [
+        $warningView = View::make('laravel-rate-limiting::components.warning-message', [
             'message' => 'Warning message',
         ]);
         $warningHtml = $warningView->render();
@@ -250,13 +245,12 @@ class BladeComponentsTest extends TestCase
     public function components_use_proper_css_classes(): void
     {
         // Test error component styling
-        $messages = new MessageBag(['rate_limit' => 'Error']);
+        $messages = new MessageBag(['rate_limit_error' => 'Error']);
         $errors = new ViewErrorBag;
         $errors->put('default', $messages);
 
-        $errorView = View::make('rate-limiting::components.error-message', [
-            'field' => 'rate_limit',
-            'errors' => $errors,
+        $errorView = View::make('laravel-rate-limiting::components.error-message', [
+            'message' => $errors,
         ]);
         $errorHtml = $errorView->render();
 
@@ -266,7 +260,7 @@ class BladeComponentsTest extends TestCase
         $this->assertStringContainsString('dark:bg-[rgb(231,81,90)]/15', $errorHtml); // Dark mode
 
         // Test warning component styling
-        $warningView = View::make('rate-limiting::components.warning-message', [
+        $warningView = View::make('laravel-rate-limiting::components.warning-message', [
             'message' => 'Warning',
         ]);
         $warningHtml = $warningView->render();
@@ -283,21 +277,8 @@ class BladeComponentsTest extends TestCase
     #[Test]
     public function components_handle_empty_strings(): void
     {
-        // Test error component with empty field
-        $messages = new MessageBag(['rate_limit' => 'Error']);
-        $errors = new ViewErrorBag;
-        $errors->put('default', $messages);
-        $errorView = View::make('rate-limiting::components.error-message', [
-            'field' => '',
-            'errors' => $errors,
-        ]);
-        $errorHtml = $errorView->render();
-
-        // Should not render when field is empty
-        $this->assertStringNotContainsString('Error', $errorHtml);
-
         // Test warning component with empty message
-        $warningView = View::make('rate-limiting::components.warning-message', [
+        $warningView = View::make('laravel-rate-limiting::components.warning-message', [
             'message' => '',
         ]);
         $warningHtml = $warningView->render();

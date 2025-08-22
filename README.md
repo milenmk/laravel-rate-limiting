@@ -69,7 +69,7 @@ This will create a `.env.rate-limiting.example` file with all available environm
 If you want to customize the Blade components, you can publish the views:
 
 ```bash
-php artisan vendor:publish --tag=rate-limiting-views
+php artisan vendor:publish --tag=laravel-rate-limiting-views
 ```
 
 This will publish the views to `resources/views/vendor/milenmk/laravel-rate-limiting/`.

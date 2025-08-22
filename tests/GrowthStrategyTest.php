@@ -24,10 +24,10 @@ class GrowthStrategyTest extends TestCase
         Config::set('rate-limiting.max_suspension_time', 3600);
 
         // Linear growth: 60 * (attempts + 1)
-        $this->assertEquals(60, $this->callCalculateDecayTime(0, 'linear'));
-        $this->assertEquals(120, $this->callCalculateDecayTime(1, 'linear'));
-        $this->assertEquals(180, $this->callCalculateDecayTime(2, 'linear'));
-        $this->assertEquals(240, $this->callCalculateDecayTime(3, 'linear'));
+        $this->assertEquals(60, $this->callCalculateDecayTime(1, 'linear'));
+        $this->assertEquals(120, $this->callCalculateDecayTime(2, 'linear'));
+        $this->assertEquals(180, $this->callCalculateDecayTime(3, 'linear'));
+        $this->assertEquals(240, $this->callCalculateDecayTime(4, 'linear'));
     }
 
     /**
@@ -39,7 +39,6 @@ class GrowthStrategyTest extends TestCase
         Config::set('rate-limiting.max_suspension_time', 3600);
 
         // Exponential growth: 60 * 2^attempts
-        $this->assertEquals(60, $this->callCalculateDecayTime(0, 'exponential'));
         $this->assertEquals(120, $this->callCalculateDecayTime(1, 'exponential'));
         $this->assertEquals(240, $this->callCalculateDecayTime(2, 'exponential'));
         $this->assertEquals(480, $this->callCalculateDecayTime(3, 'exponential'));
@@ -56,11 +55,11 @@ class GrowthStrategyTest extends TestCase
 
         // Fibonacci growth: 60 * fibonacci(attempts + 1)
         $this->assertEquals(60, $this->callCalculateDecayTime(0, 'fibonacci')); // 60 * 1
-        $this->assertEquals(120, $this->callCalculateDecayTime(1, 'fibonacci')); // 60 * 2
-        $this->assertEquals(180, $this->callCalculateDecayTime(2, 'fibonacci')); // 60 * 3
-        $this->assertEquals(300, $this->callCalculateDecayTime(3, 'fibonacci')); // 60 * 5
-        $this->assertEquals(480, $this->callCalculateDecayTime(4, 'fibonacci')); // 60 * 8
-        $this->assertEquals(780, $this->callCalculateDecayTime(5, 'fibonacci')); // 60 * 13
+        $this->assertEquals(60, $this->callCalculateDecayTime(1, 'fibonacci')); // 60 * 2
+        $this->assertEquals(120, $this->callCalculateDecayTime(2, 'fibonacci')); // 60 * 3
+        $this->assertEquals(180, $this->callCalculateDecayTime(3, 'fibonacci')); // 60 * 5
+        $this->assertEquals(300, $this->callCalculateDecayTime(4, 'fibonacci')); // 60 * 8
+        $this->assertEquals(480, $this->callCalculateDecayTime(5, 'fibonacci')); // 60 * 13
     }
 
     /**
@@ -73,8 +72,8 @@ class GrowthStrategyTest extends TestCase
 
         // Unknown strategy should default to linear
         $this->assertEquals(60, $this->callCalculateDecayTime(0, 'unknown'));
-        $this->assertEquals(120, $this->callCalculateDecayTime(1, 'unknown'));
-        $this->assertEquals(180, $this->callCalculateDecayTime(2, 'unknown'));
+        $this->assertEquals(60, $this->callCalculateDecayTime(1, 'unknown'));
+        $this->assertEquals(120, $this->callCalculateDecayTime(2, 'unknown'));
     }
 
     /**

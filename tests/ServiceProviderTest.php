@@ -73,14 +73,14 @@ class ServiceProviderTest extends TestCase
     #[Test]
     public function views_are_loaded(): void
     {
-        $this->assertTrue($this->app['view']->exists('rate-limiting::components.error-message'));
-        $this->assertTrue($this->app['view']->exists('rate-limiting::components.warning-message'));
+        $this->assertTrue($this->app['view']->exists('laravel-rate-limiting::components.error-message'));
+        $this->assertTrue($this->app['view']->exists('laravel-rate-limiting::components.warning-message'));
     }
 
     #[Test]
     public function views_can_be_published(): void
     {
-        $viewsPath = resource_path('views/vendor/milenmk/laravel-rate-limiting');
+        $viewsPath = resource_path('views/vendor/laravel-rate-limiting');
 
         // Clean up if exists
         if (File::exists($viewsPath)) {
@@ -88,7 +88,7 @@ class ServiceProviderTest extends TestCase
         }
 
         Artisan::call('vendor:publish', [
-            '--tag' => 'rate-limiting-views',
+            '--tag' => 'laravel-rate-limiting-views',
             '--force' => true,
         ]);
 
@@ -106,7 +106,7 @@ class ServiceProviderTest extends TestCase
         $bladeCompiler = $this->app->make(BladeCompiler::class);
         $namespaces = $bladeCompiler->getAnonymousComponentNamespaces();
 
-        $this->assertContains('rate-limiting::components', $namespaces);
+        $this->assertContains('laravel-rate-limiting::components', $namespaces);
     }
 
     #[Test]

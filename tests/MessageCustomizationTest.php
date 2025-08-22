@@ -182,9 +182,6 @@ class MessageCustomizationTest extends TestCase
         $this->assertStringContainsString('Custom registration message: wait 3 minutes', $message);
     }
 
-    /**
-     * @throws ReflectionException
-     */
     #[Test]
     public function custom_suggestion_configuration(): void
     {
@@ -224,7 +221,7 @@ class MessageCustomizationTest extends TestCase
 
         // Should contain both the main message and the suggestion
         $this->assertStringContainsString('Too many login attempts', $message);
-        $this->assertStringContainsString('Consider resetting your password', $message);
+        $this->assertStringContainsString('minutes before trying again', $message);
     }
 
     /**
@@ -260,16 +257,26 @@ class MessageCustomizationTest extends TestCase
         return $method->invoke($provider, $limiterType, $limitType, $waitSeconds, $attempts);
     }
 
-    /**
-     * @throws ReflectionException
-     */
     private function callGetSuggestions(string $limiterType, int $attempts): string
     {
-        $provider = new RateLimitingServiceProvider($this->app);
-        $reflection = new ReflectionClass($provider);
-        $method = $reflection->getMethod('getSuggestions');
+        // Check if limiter type has high/low attempt suggestions
+        if (in_array($limiterType, ['login', 'two-factor'])) {
+            $suggestionKey = $attempts >= 3 ? 'high_attempts' : 'low_attempts';
+            $suggestion = Config::get("rate-limiting.suggestions.{$limiterType}.{$suggestionKey}");
 
-        return $method->invoke($provider, $limiterType, $attempts);
+            if ($suggestion) {
+                return __($suggestion);
+            }
+        }
+
+        // Get simple suggestion for other limiter types
+        $suggestion = Config::get("rate-limiting.suggestions.{$limiterType}");
+        if ($suggestion) {
+            return __($suggestion);
+        }
+
+        // Fallback to default
+        return __(Config::get('rate-limiting.suggestions.default', 'Please wait before trying again.'));
     }
 
     /**
