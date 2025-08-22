@@ -215,6 +215,9 @@ class RateLimitingServiceProvider extends ServiceProvider
     ): Limit|true|Unlimited {
         $currentAttempts = RateLimiter::attempts($key);
 
+        // Calculate decay time based on growth strategy
+        $decay = $this->calculateDecayTime($currentAttempts, $growthStrategy);
+
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             $wait = RateLimiter::availableIn($key);
 
@@ -236,14 +239,13 @@ class RateLimitingServiceProvider extends ServiceProvider
             $message = $this->getRateLimitMessage($limiterType, $limitType, $wait, $currentAttempts);
             session()->flash('rate_limit_error', $message);
 
-            return Limit::none()->response(function () use ($request) {
+            $limit = new Limit($limiterType, 0, $decay);
+
+            return $limit->response(function () use ($request) {
                 return back()
                     ->withInput($request->except(['password', 'password_confirmation', 'code']));
             });
         }
-
-        // Calculate decay time based on growth strategy
-        $decay = $this->calculateDecayTime($currentAttempts, $growthStrategy);
 
         // Increment the counter with custom decay (suspension time)
         RateLimiter::hit($key, $decay);
@@ -258,32 +260,6 @@ class RateLimitingServiceProvider extends ServiceProvider
         }
 
         return true; // allow attempt
-    }
-
-    /**
-     * Get a user-friendly rate limit message with enhanced information
-     */
-    private function getRateLimitMessage(
-        string $limiterType,
-        string $limitType,
-        int $waitSeconds,
-        int $attempts,
-    ): string {
-        $waitMinutes = ceil($waitSeconds / 60);
-
-        $message = Config::get("rate-limiting.messages.{$limiterType}.{$limitType}");
-
-        // Get base message from config
-        if (! $message) {
-            $baseMessage = Config::get(
-                'rate-limiting.messages.default',
-                'Too many attempts. Please wait :minutes minutes before trying again.',
-            );
-
-            $baseMessage = __($baseMessage, ['minutes' => $waitMinutes]);
-        }
-
-        return $message ? __($message, ['minutes' => $waitMinutes]) : $baseMessage;
     }
 
     /**
@@ -326,6 +302,32 @@ class RateLimitingServiceProvider extends ServiceProvider
         }
 
         return $b;
+    }
+
+    /**
+     * Get a user-friendly rate limit message with enhanced information
+     */
+    private function getRateLimitMessage(
+        string $limiterType,
+        string $limitType,
+        int $waitSeconds,
+        int $attempts,
+    ): string {
+        $waitMinutes = ceil($waitSeconds / 60);
+
+        $message = Config::get("rate-limiting.messages.{$limiterType}.{$limitType}");
+
+        // Get base message from config
+        if (! $message) {
+            $baseMessage = Config::get(
+                'rate-limiting.messages.default',
+                'Too many attempts. Please wait :minutes minutes before trying again.',
+            );
+
+            $baseMessage = __($baseMessage, ['minutes' => $waitMinutes]);
+        }
+
+        return $message ? __($message, ['minutes' => $waitMinutes]) : $baseMessage;
     }
 
     /**

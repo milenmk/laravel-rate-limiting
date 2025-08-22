@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.3
+
+#### Published at: 2025-08-22
+
+- [FIX] Rate limiter reset after reaching max attempt, instead of blocking the request
+
 ## v1.0.2
 
 #### Published at: 2025-08-21
