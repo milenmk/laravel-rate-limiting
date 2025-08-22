@@ -216,25 +216,26 @@ class RateLimitingServiceProvider extends ServiceProvider
 
         $currentAttempts = RateLimiter::attempts($key);
 
-        // Calculate decay time based on growth strategy
-        if ($currentAttempts > $maxAttempts) {
-            $isOverMaxAttempts = $currentAttempts - $maxAttempts;
-            $decay = $this->calculateDecayTime($isOverMaxAttempts, $growthStrategy);
-        } else {
-            $decay = $this->calculateDecayTime(0, $growthStrategy);
-        }
+        // Check if we're already over the limit (before incrementing)
+        if ($currentAttempts >= $maxAttempts) {
+            // Calculate how many attempts over the limit we are
+            $attemptsOverLimit = $currentAttempts - $maxAttempts + 1; // +1 for the current attempt
 
-        // Increment the counter with custom decay (suspension time)
-        RateLimiter::hit($key, $decay);
+            // Calculate new decay time based on how many times over the limit
+            $decay = $this->calculateDecayTime($attemptsOverLimit, $growthStrategy);
 
-        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
-            $wait = RateLimiter::availableIn($key);
+            // Clear the existing rate limit and set a new one with the increased decay time
+            RateLimiter::clear($key);
+            RateLimiter::hit($key, $decay);
+
+            $wait = $decay; // Use the full decay time as wait time
 
             // Log warning about excessive attempts if enabled
             if (Config::get('rate-limiting.log_violations', true)) {
                 Log::warning("Rate limit exceeded for {$limiterType}:{$limitType}: {$key}", [
                     'wait_seconds' => $wait,
-                    'attempts' => $currentAttempts,
+                    'attempts' => $currentAttempts + 1, // +1 because we're about to count this attempt
+                    'attempts_over_limit' => $attemptsOverLimit,
                     'ip' => $request->ip(),
                     'user_agent' => $request->userAgent(),
                     'limiter_type' => $limiterType,
@@ -243,10 +244,10 @@ class RateLimitingServiceProvider extends ServiceProvider
                 ]);
             }
 
-            Log::info("Waiting time: wait time is {$wait} and decay time is {$decay}");
+            Log::info("Rate limit exceeded: wait time is {$wait} and decay time is {$decay}, attempts over limit: {$attemptsOverLimit}");
 
             // Get custom message with enhanced information
-            $message = $this->getRateLimitMessage($limiterType, $limitType, $wait, $currentAttempts);
+            $message = $this->getRateLimitMessage($limiterType, $limitType, $wait, $currentAttempts + 1);
             session()->flash('rate_limit_error', $message);
 
             $limit = new Limit($limiterType, 0, $wait);
@@ -257,7 +258,10 @@ class RateLimitingServiceProvider extends ServiceProvider
             });
         }
 
-        // Check if user is approaching the limit and provide warning (after incrementing)
+        // We're still within the allowed attempts, so just increment normally
+        RateLimiter::hit($key, 60); // Use a standard 60-second decay for normal attempts
+
+        // Check if user is approaching the limit (after incrementing)
         $attemptsAfterHit = $currentAttempts + 1;
         $remainingAttempts = $maxAttempts - $attemptsAfterHit;
         if (($remainingAttempts <= 2 && $remainingAttempts > 0) || $maxAttempts === $attemptsAfterHit) {
@@ -276,10 +280,13 @@ class RateLimitingServiceProvider extends ServiceProvider
     {
         $maxSuspensionTime = Config::get('rate-limiting.max_suspension_time', 3600);
 
+        // Ensure we have at least 1 attempt for calculations
+        $attempts = max(1, $attempts);
+
         return match ($growthStrategy) {
-            'exponential' => min($maxSuspensionTime, 60 * 2 ** ($attempts ?: 1)),
-            'fibonacci' => min($maxSuspensionTime, 60 * $this->getFibonacci($attempts + 1)),
-            default => min($maxSuspensionTime, 60 * ($attempts + 1)), // Default to linear
+            'exponential' => min($maxSuspensionTime, 60 * 2 ** $attempts),
+            'fibonacci' => min($maxSuspensionTime, 60 * $this->getFibonacci($attempts)),
+            default => min($maxSuspensionTime, 60 * $attempts), // Default to linear
         };
     }
 
