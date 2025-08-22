@@ -227,8 +227,8 @@ class RateLimitingServiceProvider extends ServiceProvider
             // Calculate new decay time based on violation count
             $decay = $this->calculateDecayTime($violationCount, $growthStrategy);
 
-            // Clear the existing rate limit and set a new one with the increased decay time
-            RateLimiter::clear($key);
+            // Extend the lockout time without clearing the attempts counter
+            // This preserves the attempt count while extending the ban duration
             RateLimiter::hit($key, $decay);
 
             $wait = $decay; // Use the full decay time as wait time
@@ -254,6 +254,8 @@ class RateLimitingServiceProvider extends ServiceProvider
             session()->flash('rate_limit_error', $message);
 
             $limit = new Limit($limiterType, 0, $wait);
+
+            Log::info('Warning message fired.', ['message' => $warningMessage]);
 
             return $limit->response(function () use ($request) {
                 return back()
