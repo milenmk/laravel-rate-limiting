@@ -213,10 +213,16 @@ class RateLimitingServiceProvider extends ServiceProvider
         string $growthStrategy,
         Request $request,
     ): Limit|true|Unlimited {
+
         $currentAttempts = RateLimiter::attempts($key);
 
         // Calculate decay time based on growth strategy
-        $decay = $this->calculateDecayTime($currentAttempts, $growthStrategy);
+        if ($currentAttempts > $maxAttempts) {
+            $isOverMaxAttempts = $currentAttempts - $maxAttempts;
+            $decay = $this->calculateDecayTime($isOverMaxAttempts, $growthStrategy);
+        } else {
+            $decay = $this->calculateDecayTime(0, $growthStrategy);
+        }
 
         // Increment the counter with custom decay (suspension time)
         RateLimiter::hit($key, $decay);
@@ -237,8 +243,9 @@ class RateLimitingServiceProvider extends ServiceProvider
                 ]);
             }
 
+            Log::info("Waiting time: wait time is {$wait} and decay time is {$decay}");
+
             // Get custom message with enhanced information
-            session()->forget('rate_limit_error');
             $message = $this->getRateLimitMessage($limiterType, $limitType, $wait, $currentAttempts);
             session()->flash('rate_limit_error', $message);
 
@@ -270,7 +277,7 @@ class RateLimitingServiceProvider extends ServiceProvider
         $maxSuspensionTime = Config::get('rate-limiting.max_suspension_time', 3600);
 
         return match ($growthStrategy) {
-            'exponential' => min($maxSuspensionTime, 60 * 2 ** $attempts),
+            'exponential' => min($maxSuspensionTime, 60 * 2 ** ($attempts ?: 1)),
             'fibonacci' => min($maxSuspensionTime, 60 * $this->getFibonacci($attempts + 1)),
             default => min($maxSuspensionTime, 60 * ($attempts + 1)), // Default to linear
         };
