@@ -23,7 +23,7 @@ return [
     */
     'enabled' => env('RATE_LIMITING_ENABLED', true),
     'log_violations' => env('RATE_LIMITING_LOG_VIOLATIONS', true),
-    'max_suspension_time' => env('RATE_LIMITING_MAX_SUSPENSION_TIME', 3600), // 1 hour in seconds
+    'max_suspension_time' => (int) env('RATE_LIMITING_MAX_SUSPENSION_TIME', 3600), // 1 hour in seconds
     'show_wait_counter' => env('RATE_LIMITING_SHOW_WAIT_COUNTER', true), // show wait countdown timer on frontend
 
     /*
@@ -66,15 +66,15 @@ return [
             'limits' => [
                 'global' => [
                     'enabled' => env('RATE_LIMITING_REGISTER_GLOBAL_ENABLED', true),
-                    'max_attempts' => env('RATE_LIMITING_REGISTER_GLOBAL_MAX_ATTEMPTS', 150),
+                    'max_attempts' => (int) env('RATE_LIMITING_REGISTER_GLOBAL_MAX_ATTEMPTS', 150),
                 ],
                 'email' => [
                     'enabled' => env('RATE_LIMITING_REGISTER_EMAIL_ENABLED', true),
-                    'max_attempts' => env('RATE_LIMITING_REGISTER_EMAIL_MAX_ATTEMPTS', 3),
+                    'max_attempts' => (int) env('RATE_LIMITING_REGISTER_EMAIL_MAX_ATTEMPTS', 3),
                 ],
                 'ip' => [
                     'enabled' => env('RATE_LIMITING_REGISTER_IP_ENABLED', true),
-                    'max_attempts' => env('RATE_LIMITING_REGISTER_IP_MAX_ATTEMPTS', 3),
+                    'max_attempts' => (int) env('RATE_LIMITING_REGISTER_IP_MAX_ATTEMPTS', 3),
                 ],
             ],
         ],
@@ -85,15 +85,15 @@ return [
             'limits' => [
                 'global' => [
                     'enabled' => env('RATE_LIMITING_LOGIN_GLOBAL_ENABLED', false), // Disabled by default for login
-                    'max_attempts' => env('RATE_LIMITING_LOGIN_GLOBAL_MAX_ATTEMPTS', 1000),
+                    'max_attempts' => (int) env('RATE_LIMITING_LOGIN_GLOBAL_MAX_ATTEMPTS', 1000),
                 ],
                 'username_ip' => [
                     'enabled' => env('RATE_LIMITING_LOGIN_USERNAME_IP_ENABLED', true),
-                    'max_attempts' => env('RATE_LIMITING_LOGIN_USERNAME_IP_MAX_ATTEMPTS', 5),
+                    'max_attempts' => (int) env('RATE_LIMITING_LOGIN_USERNAME_IP_MAX_ATTEMPTS', 5),
                 ],
                 'ip' => [
                     'enabled' => env('RATE_LIMITING_LOGIN_IP_ENABLED', true),
-                    'max_attempts' => env('RATE_LIMITING_LOGIN_IP_MAX_ATTEMPTS', 10),
+                    'max_attempts' => (int) env('RATE_LIMITING_LOGIN_IP_MAX_ATTEMPTS', 10),
                 ],
             ],
         ],
@@ -104,15 +104,15 @@ return [
             'limits' => [
                 'global' => [
                     'enabled' => env('RATE_LIMITING_FORGOT_PASSWORD_GLOBAL_ENABLED', false), // Disabled by default
-                    'max_attempts' => env('RATE_LIMITING_FORGOT_PASSWORD_GLOBAL_MAX_ATTEMPTS', 500),
+                    'max_attempts' => (int) env('RATE_LIMITING_FORGOT_PASSWORD_GLOBAL_MAX_ATTEMPTS', 500),
                 ],
                 'email' => [
                     'enabled' => env('RATE_LIMITING_FORGOT_PASSWORD_EMAIL_ENABLED', true),
-                    'max_attempts' => env('RATE_LIMITING_FORGOT_PASSWORD_EMAIL_MAX_ATTEMPTS', 3),
+                    'max_attempts' => (int) env('RATE_LIMITING_FORGOT_PASSWORD_EMAIL_MAX_ATTEMPTS', 3),
                 ],
                 'ip' => [
                     'enabled' => env('RATE_LIMITING_FORGOT_PASSWORD_IP_ENABLED', true),
-                    'max_attempts' => env('RATE_LIMITING_FORGOT_PASSWORD_IP_MAX_ATTEMPTS', 5),
+                    'max_attempts' => (int) env('RATE_LIMITING_FORGOT_PASSWORD_IP_MAX_ATTEMPTS', 5),
                 ],
             ],
         ],
@@ -123,15 +123,15 @@ return [
             'limits' => [
                 'global' => [
                     'enabled' => env('RATE_LIMITING_TWO_FACTOR_GLOBAL_ENABLED', false), // Disabled by default
-                    'max_attempts' => env('RATE_LIMITING_TWO_FACTOR_GLOBAL_MAX_ATTEMPTS', 1000),
+                    'max_attempts' => (int) env('RATE_LIMITING_TWO_FACTOR_GLOBAL_MAX_ATTEMPTS', 1000),
                 ],
                 'session' => [
                     'enabled' => env('RATE_LIMITING_TWO_FACTOR_SESSION_ENABLED', true),
-                    'max_attempts' => env('RATE_LIMITING_TWO_FACTOR_SESSION_MAX_ATTEMPTS', 5),
+                    'max_attempts' => (int) env('RATE_LIMITING_TWO_FACTOR_SESSION_MAX_ATTEMPTS', 5),
                 ],
                 'ip' => [
                     'enabled' => env('RATE_LIMITING_TWO_FACTOR_IP_ENABLED', true),
-                    'max_attempts' => env('RATE_LIMITING_TWO_FACTOR_IP_MAX_ATTEMPTS', 10),
+                    'max_attempts' => (int) env('RATE_LIMITING_TWO_FACTOR_IP_MAX_ATTEMPTS', 10),
                 ],
             ],
         ],

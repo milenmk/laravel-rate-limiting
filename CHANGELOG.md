@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.1.2
+
+#### Published at: 2025-08-22
+
+- [FIX] Blade classes not compiled due to blank spaces
+- [FIX] Fixed type error when using environment variables for max_attempts configuration
+    - **Issue**: Setting rate limiting max_attempts values via environment variables (e.g.,
+      `RATE_LIMITING_LOGIN_USERNAME_IP_MAX_ATTEMPTS=3`) caused a TypeError due to string values being passed to
+      functions expecting integers
+    - **Root Cause**: Laravel's `env()` function returns string values, but the package uses strict typing (
+      `declare(strict_types=1)`)
+    - **Solution**: Added explicit integer casting `(int)` to all `max_attempts` and `max_suspension_time` configuration
+      values
+    - **Impact**: All environment variable configurations for rate limiting now work correctly without type errors
+
 ## v1.1.1
 
 #### Published at: 2025-08-22
