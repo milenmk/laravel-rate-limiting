@@ -6,7 +6,7 @@
     @endphp
 
     <div
-        class="bg-[rgb(251, 191, 36)] border-[rgb(217, 119, 6)] dark:bg-[rgb(226, 160, 63)]/15 {{ $class }} relative flex items-center rounded border text-white"
+        class="{{ $class }} relative flex items-center rounded border border-[rgb(217,119,6)] bg-[rgb(251,191,36)] text-white dark:bg-[rgb(226,160,63)]/15"
     >
         <span class="flex items-center">
             <svg

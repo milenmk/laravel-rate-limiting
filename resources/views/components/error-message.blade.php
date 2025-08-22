@@ -7,7 +7,7 @@
     @endphp
 
     <div
-        class="bg-[rgb(248, 113, 113)] border-[rgb(220, 38, 38)] {{ $class }} relative flex items-center rounded border text-white dark:bg-[rgb(231,81,90)]/15"
+        class="{{ $class }} relative flex items-center rounded border border-[rgb(220,38,38)] bg-[rgb(248,113,113)] text-white dark:bg-[rgb(231,81,90)]/15"
     >
         <span class="flex items-center">
             <svg
@@ -31,7 +31,7 @@
 
     @if ($remainingSeconds && config('rate-limiting.show_wait_counter', true))
         <div
-            class="bg-[rgb(248, 113, 113)] border-[rgb(220, 38, 38)] {{ $class }} relative flex items-center rounded border text-white dark:bg-[rgb(231,81,90)]/15"
+            class="{{ $class }} relative flex items-center rounded border border-[rgb(220,38,38)] bg-[rgb(248,113,113)] text-white dark:bg-[rgb(231,81,90)]/15"
         >
             <div class="font-mono text-sm" id="countdown">
                 Remaining blocked time:
