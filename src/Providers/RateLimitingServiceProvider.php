@@ -255,8 +255,6 @@ class RateLimitingServiceProvider extends ServiceProvider
 
             $limit = new Limit($limiterType, 0, $wait);
 
-            Log::info('Warning message fired.', ['message' => $warningMessage]);
-
             return $limit->response(function () use ($request) {
                 return back()
                     ->withInput($request->except(['password', 'password_confirmation', 'code']));
@@ -272,6 +270,9 @@ class RateLimitingServiceProvider extends ServiceProvider
         if (($remainingAttempts <= 2 && $remainingAttempts > 0) || $maxAttempts === $attemptsAfterHit) {
             // Add a warning message for approaching limit
             $warningMessage = $this->getWarningMessage($limiterType, $remainingAttempts);
+
+            Log::info('Warning message fired.', ['message' => $warningMessage]);
+
             session()->flash('rate_limit_warning', $warningMessage);
         }
 
