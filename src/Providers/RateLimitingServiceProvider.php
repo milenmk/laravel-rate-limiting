@@ -88,11 +88,17 @@ class RateLimitingServiceProvider extends ServiceProvider
             'laravel-rate-limiting-views',
         );
 
-        // Register Blade components
-        Blade::anonymousComponentPath(
-            resource_path('views/vendor/laravel-rate-limiting/components'),
-            'laravel-rate-limiting',
-        );
+        // Register Blade components from package resources
+        if (is_dir(resource_path('views/vendor/laravel-rate-limiting/components'))) {
+            // Use published views if they exist
+            Blade::anonymousComponentPath(
+                resource_path('views/vendor/laravel-rate-limiting/components'),
+                'laravel-rate-limiting',
+            );
+        } else {
+            // Fall back to package views
+            Blade::anonymousComponentPath(__DIR__ . '/../../resources/views/components', 'laravel-rate-limiting');
+        }
 
         if (! Config::get('rate-limiting.enabled', true)) {
             // Clear any existing limiters when disabled
@@ -213,7 +219,6 @@ class RateLimitingServiceProvider extends ServiceProvider
         string $growthStrategy,
         Request $request,
     ): Limit|true|Unlimited {
-
         $currentAttempts = RateLimiter::attempts($key);
         $violationKey = $key . ':violations';
         $currentViolations = RateLimiter::attempts($violationKey);
@@ -256,7 +261,9 @@ class RateLimitingServiceProvider extends ServiceProvider
 
             // Used for debug only when making changes
             if (Config::get('rate-limiting.dev_mode', true)) {
-                Log::debug("Rate limit exceeded: wait time is {$wait} and decay time is {$decay}, violation count: {$violationCount}");
+                Log::debug(
+                    "Rate limit exceeded: wait time is {$wait} and decay time is {$decay}, violation count: {$violationCount}",
+                );
             }
 
             // Get custom message with enhanced information
@@ -267,8 +274,7 @@ class RateLimitingServiceProvider extends ServiceProvider
             $limit = new Limit($limiterType, 0, $wait);
 
             return $limit->response(function () use ($request) {
-                return back()
-                    ->withInput($request->except(['password', 'password_confirmation', 'code']));
+                return back()->withInput($request->except(['password', 'password_confirmation', 'code']));
             });
         }
 
