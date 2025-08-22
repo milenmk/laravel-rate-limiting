@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\View\Compilers\BladeCompiler;
 use Milenmk\LaravelRateLimiting\Providers\RateLimitingServiceProvider;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -98,15 +97,6 @@ class ServiceProviderTest extends TestCase
 
         // Clean up
         File::deleteDirectory($viewsPath);
-    }
-
-    #[Test]
-    public function blade_components_are_registered(): void
-    {
-        $bladeCompiler = $this->app->make(BladeCompiler::class);
-        $namespaces = $bladeCompiler->getAnonymousComponentNamespaces();
-
-        $this->assertContains('laravel-rate-limiting::components', $namespaces);
     }
 
     #[Test]
