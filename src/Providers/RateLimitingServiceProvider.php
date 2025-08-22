@@ -90,7 +90,7 @@ class RateLimitingServiceProvider extends ServiceProvider
 
         // Register Blade components
         Blade::anonymousComponentPath(
-            resource_path('views/vendor/milenmk/laravel-rate-limiting/components'),
+            resource_path('views/vendor/laravel-rate-limiting/components'),
             'laravel-rate-limiting',
         );
 
