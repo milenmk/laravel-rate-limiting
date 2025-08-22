@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.1.1
+
+#### Published at: 2025-08-22
+
+- minor fixes
+- tests updated to reflect current package state
+
 ## v1.1.0
 
 #### Published at: 2025-08-22
