@@ -4,7 +4,7 @@
 
 #### Published at: 2025-08-22
 
-- [FIX] Rate limiter reset after reaching max attempt, instead of blocking the request
+- [FIX] Rate limiter reset after reaching max attempts, instead of blocking the request
 
 ## v1.0.2
 

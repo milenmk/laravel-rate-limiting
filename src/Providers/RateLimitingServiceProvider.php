@@ -218,6 +218,9 @@ class RateLimitingServiceProvider extends ServiceProvider
         // Calculate decay time based on growth strategy
         $decay = $this->calculateDecayTime($currentAttempts, $growthStrategy);
 
+        // Increment the counter with custom decay (suspension time)
+        RateLimiter::hit($key, $decay);
+
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             $wait = RateLimiter::availableIn($key);
 
@@ -239,16 +242,13 @@ class RateLimitingServiceProvider extends ServiceProvider
             $message = $this->getRateLimitMessage($limiterType, $limitType, $wait, $currentAttempts);
             session()->flash('rate_limit_error', $message);
 
-            $limit = new Limit($limiterType, 0, $decay);
+            $limit = new Limit($limiterType, 0, $wait);
 
             return $limit->response(function () use ($request) {
                 return back()
                     ->withInput($request->except(['password', 'password_confirmation', 'code']));
             });
         }
-
-        // Increment the counter with custom decay (suspension time)
-        RateLimiter::hit($key, $decay);
 
         // Check if user is approaching the limit and provide warning (after incrementing)
         $attemptsAfterHit = $currentAttempts + 1;
