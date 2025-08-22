@@ -27,6 +27,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Developer mode
+    |--------------------------------------------------------------------------
+    |
+    | These settings control logging of some additional information during development.
+    |
+    | Note: In production environments, these features should not be used as they may expose sensitive information.
+    |
+    */
+    'dev_mode' => in_array(env('APP_ENV'), ['local', 'dev'], true) && env('RATE_LIMITING_DEV_MODE', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Username Resolution Configuration
     |--------------------------------------------------------------------------
     |

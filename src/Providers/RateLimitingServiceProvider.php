@@ -247,7 +247,10 @@ class RateLimitingServiceProvider extends ServiceProvider
                 ]);
             }
 
-            Log::info("Rate limit exceeded: wait time is {$wait} and decay time is {$decay}, violation count: {$violationCount}");
+            // Used for debug only when making changes
+            if (Config::get('rate-limiting.dev_mode', true)) {
+                Log::debug("Rate limit exceeded: wait time is {$wait} and decay time is {$decay}, violation count: {$violationCount}");
+            }
 
             // Get custom message with enhanced information
             $message = $this->getRateLimitMessage($limiterType, $limitType, $wait, $currentAttempts + 1);
@@ -271,7 +274,10 @@ class RateLimitingServiceProvider extends ServiceProvider
             // Add a warning message for approaching limit
             $warningMessage = $this->getWarningMessage($limiterType, $remainingAttempts);
 
-            Log::info('Warning message fired.', ['message' => $warningMessage]);
+            // Used for debug only when making changes
+            if (Config::get('rate-limiting.dev_mode', true)) {
+                Log::debug('Warning message fired.', ['message' => $warningMessage]);
+            }
 
             session()->flash('rate_limit_warning', $warningMessage);
         }
