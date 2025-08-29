@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.1.3
+
+#### Published: 2025-08-29
+
+- Enhance README with responsive badge links
+- Adds a list of other Laravel packages to the README
+- Improved DISCLAIMER in README
+
 ## v1.1.2
 
 #### Published at: 2025-08-22
