@@ -47,7 +47,7 @@ The system is built around a dedicated service provider that implements a config
 ## Requirements
 
 - PHP 8.2 or higher
-- Laravel 10.x, 11.x, or 12.x
+- Laravel 10.x ~13.x
 
 ## Installation
 

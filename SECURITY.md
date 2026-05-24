@@ -7,6 +7,7 @@
 | 0.x.x   | Alpha  | Development    | not supported   |
 | 1.0.x   | RC     | Public Testing | not supported   |
 | 1.1.x   | Stable | Production     | TBD             |
+| 1.2.x   | Stable | Production     | TBD             |
 
 #### Stage (maturity of the release)
 

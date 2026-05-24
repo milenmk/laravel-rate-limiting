@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.2.0
+
+#### Published: 2025-05-24
+
+- [IMPROVEMENT] Add support for Laravel 13.x
+
 ## v1.1.3
 
 #### Published: 2025-08-29
